@@ -10,7 +10,7 @@ https://anton-vbr.github.io/vue3-pivot-data-table/
 
 ## Examples 🖼️
 
-https://anton-vbr.github.io/vue3-pivot-data-table/examples
+https://anton-vbr.github.io/vue3-pivot-data-table/examples/basic.html
 
 ## Releases 🚀
 
