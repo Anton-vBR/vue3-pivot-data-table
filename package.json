@@ -1,0 +1,75 @@
+{
+  "name": "vue3-pivot-data-table",
+  "author": "anton-vbr",
+  "private": false,
+  "version": "0.1.0",
+  "description": "A non-aggregating Vue3 table component for presenting pivot-like data",
+  "type": "module",
+  "types": "./types/main.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "homepage": "https://github.com/Anton-vBR/vue3-pivot-data-table",
+  "main": "./dist/vue3-pivot-data-table.umd.js",
+  "module": "./dist/vue3-pivot-data-table.es.js",
+  "exports": {
+    ".": {
+      "types": "./types/main.d.ts",
+      "import": "./dist/vue3-pivot-data-table.es.js",
+      "require": "./dist/vue3-pivot-data-table.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vitest run && vite build",
+    "build-nots": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --fix 'src/**/*.{vue,html,css,js,ts}'",
+    "format": "npx prettier . --write",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "test": "vitest"
+  },
+  "keywords": [
+    "vue3",
+    "data-table-component",
+    "data-table",
+    "vue3-component",
+    "vue-component"
+  ],
+  "dependencies": {
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/test-utils": "^2.4.4",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-vue": "^9.18.1",
+    "happy-dom": "^13.3.8",
+    "prettier": "3.0.3",
+    "sass": "^1.69.5",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.5",
+    "vitepress": "^1.0.0-rc.42",
+    "vitest": "^1.2.2",
+    "vue-tsc": "^1.8.5"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anton-vBR/vue3-pivot-data-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Anton-vBR/vue3-pivot-data-table/issues"
+  }
+}
