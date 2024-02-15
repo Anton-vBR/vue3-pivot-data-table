@@ -25,21 +25,29 @@ export function getItemValue(column: string, item: Item) {
   return item[column];
 }
 
-export function generateColumnContent(header: HeaderForRender, item: Item, locale: string) {
-  let content = getItemValue(header.value, item);
-  content = Array.isArray(content) ? content.join(',') : content;
-
+function applyFormat(content: any, header: HeaderForRender, locale: string) {
+  if (content == null) {
+    return null;
+  }
+  if (Array.isArray(content)) {
+    return content.join(', ')
+  }
   if (header.format) {
     return new Intl.NumberFormat(locale, header.format).format(content);
   }
-
-  if (header.prefix) content = header.prefix + content;
-
+  if (header.prefix) {
+    content = header.prefix + content;
+  }
   if (header.suffix) {
     content = content + header.suffix;
   }
-
   return content;
+}
+
+export function generateColumnContent(header: HeaderForRender, item: Item, locale: string) {
+  const content = getItemValue(header.value, item);
+
+  return applyFormat(content, header, locale);
 }
 
 export function generateColumnContentBasedOnColumn(
@@ -55,19 +63,5 @@ export function generateColumnContentBasedOnColumn(
     content = getItemValue(header.value, item['rows']);
   }
 
-  if (content == null) {
-    return null;
-  }
-
-  if (header.format) {
-    return new Intl.NumberFormat(locale, header.format).format(content);
-  }
-
-  if (header.prefix) content = header.prefix + content;
-
-  if (header.suffix) {
-    content = content + header.suffix;
-  }
-
-  return content;
+  return applyFormat(content, header, locale);
 }
