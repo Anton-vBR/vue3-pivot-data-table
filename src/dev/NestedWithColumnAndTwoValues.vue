@@ -78,7 +78,7 @@ const values: Value[] = [
   },
 ];
 
-const items: Item[] = mockItems;
+const items: Item[] = mockItems.filter((x) => !(x.fruit === 'Tomato' && x.weekday === 'Tuesday'));
 
 function alert(obj: Row) {
   window.alert(JSON.stringify(obj));
