@@ -33,6 +33,7 @@ export type Column = {
   text: string;
   value: string;
   cssClass?: string;
+  formatFunc?: any;
 };
 
 export type Row = {
@@ -42,6 +43,7 @@ export type Row = {
   sortFunc?: any;
   sticky?: boolean;
   cssClass?: string;
+  formatFunc?: any;
 };
 
 export type GroupedRow = {
@@ -59,7 +61,8 @@ export type Value = {
   type?: 'row' | 'column';
   columnValue?: string;
   sortFunc?: any;
-  format?: any;
+  formatFunc?: any;
+  numberFormat?: any;
   prefix?: string;
   suffix?: string;
   parent?: { text: string };

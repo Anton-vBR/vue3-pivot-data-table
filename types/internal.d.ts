@@ -21,7 +21,8 @@ export type HeaderForRender = {
   columnValue?: any;
   cssClass?: string;
   type?: string;
-  format?: any;
+  formatFunc?: any;
+  numberFormat?: any;
   prefix?: string;
   suffix?: string;
 };
