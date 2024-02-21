@@ -157,4 +157,9 @@ export default {
     default: '',
     description: 'ID attribute for the table element.',
   },
+  nullFillText: {
+    type: String,
+    default: '-',
+    description: 'Text to be shown if cellvalue is null',
+  },
 };
