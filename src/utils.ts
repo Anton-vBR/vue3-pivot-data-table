@@ -44,18 +44,12 @@ function applyFormat(content: any, header: HeaderForRender, locale: string) {
   return content;
 }
 
-export function generateColumnContent(header: HeaderForRender, item: Item, locale: string) {
+export function generateCellContent(header: HeaderForRender, item: Item, locale: string) {
   const content = getItemValue(header.value, item);
-
   return applyFormat(content, header, locale);
 }
 
-export function generateColumnContentBasedOnColumn(
-  header: HeaderForRender,
-  item: Item,
-  column: Column,
-  locale: string,
-) {
+export function generateCellContentBasedOnColumn(header: HeaderForRender, item: Item, column: Column, locale: string) {
   let content: any;
   if (header.columnValue) {
     content = item.items.find((x: Item) => x[column.value] === header.columnValue)?.[header.value];

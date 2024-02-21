@@ -87,6 +87,7 @@
       <tbody>
         <tr
           v-for="(item, index) in pageItems"
+          :id="`row-${index}`"
           :key="index"
           :class="[{ [oddRowClass]: (index + 1) % 2 === 0 }, { [evenRowClass]: index % 2 === 0 }]"
           :role="'button'"
@@ -119,11 +120,11 @@
             <slot v-else-if="slots['item']" name="item" v-bind="{ column, item }" />
 
             <template v-else-if="column">
-              {{ generateColumnContentBasedOnColumn(header, item, column, locale) }}
+              {{ generateCellContentBasedOnColumn(header, item, column, locale) }}
             </template>
 
             <template v-else>
-              {{ generateColumnContent(header, item, locale) }}
+              {{ generateCellContent(header, item, locale) }}
             </template>
           </td>
         </tr>
@@ -213,7 +214,7 @@ import usePageItems from '../hooks/usePageItems';
 
 import tEmits from '../emits';
 
-import { generateColumnContent, generateColumnContentBasedOnColumn } from '../utils';
+import { generateCellContent, generateCellContentBasedOnColumn } from '../utils';
 
 const errors = ref<{ type: string; text: string }[]>([]);
 const dataTable = ref();
@@ -338,6 +339,7 @@ const expose = {
   currentPageFirstIndex,
   currentPageLastIndex,
   clientItemsLength: totalItemsLength,
+  totalItems,
   maxPaginationNumber,
   currentPaginationNumber,
   isLastPage,
@@ -345,6 +347,7 @@ const expose = {
   nextPage,
   prevPage,
   updatePage,
+  updateSortField,
   rowsPerPageOptions: rowsItemsComputed,
   rowsPerPageActiveOption: rowsPerPageRef,
   updateRowsPerPageActiveOption: updateRowsPerPage,

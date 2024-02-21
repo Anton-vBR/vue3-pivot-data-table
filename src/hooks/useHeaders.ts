@@ -47,13 +47,13 @@ export default function useHeaders(
         return headerGroup;
       });
       fixedHeaders = [
-        ...(rows.value.map((x) => ({ ...x, type: 'row' })) as HeaderForRender[]),
-        ...(headers.map((x) => ({ ...x, type: 'value' })) as HeaderForRender[]),
+        ...(rows.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
+        ...(headers.map((x) => ({ ...x, type: 'tableValue' })) as HeaderForRender[]),
       ];
     } else {
       fixedHeaders = [
-        ...(rows.value.map((x) => ({ ...x, type: 'row' })) as HeaderForRender[]),
-        ...(values.value.map((x) => ({ ...x, type: 'value' })) as HeaderForRender[]),
+        ...(rows.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
+        ...(values.value.map((x) => ({ ...x, type: 'tableValue' })) as HeaderForRender[]),
       ];
     }
 
