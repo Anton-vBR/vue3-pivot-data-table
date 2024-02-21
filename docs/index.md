@@ -173,7 +173,7 @@ import { Value, Item, Row, Column } from '@/types/main.d.ts';
     text: 'Change',
     value: 'sales_change',
     sortable: true,
-    format: { style: 'percent', minimumFractionDigits: 0 },
+    numberFormat: { style: 'percent', minimumFractionDigits: 0 },
     parent: {
       text: 'Sales',
     },
@@ -185,7 +185,7 @@ import { Value, Item, Row, Column } from '@/types/main.d.ts';
     text: 'Outcome',
     value: 'sales',
     sortable: true,
-    format: { style: 'currency', currency: 'USD', minimumFractionDigits: 1 },
+    numberFormat: { style: 'currency', currency: 'USD', minimumFractionDigits: 1 },
     parent: {
       text: 'Sales',
     },

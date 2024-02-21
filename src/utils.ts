@@ -30,10 +30,12 @@ function applyFormat(content: any, header: HeaderForRender, locale: string) {
     return null;
   }
   if (Array.isArray(content)) {
-    return content.join(', ')
+    return content.join(', ');
   }
-  if (header.format) {
-    return new Intl.NumberFormat(locale, header.format).format(content);
+  if (header.formatFunc) {
+    content = header.formatFunc(content);
+  } else if (header.numberFormat) {
+    content = new Intl.NumberFormat(locale, header.numberFormat).format(content);
   }
   if (header.prefix) {
     content = header.prefix + content;

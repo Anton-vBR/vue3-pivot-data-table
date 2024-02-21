@@ -101,18 +101,29 @@ export default function useHeaders(
     if (column.value) {
       const resultArray = headersForRender.value.reduce(
         (accumulator, item) => {
-          const text = item.columnValue || null;
+          const originalText: string | null = item.columnValue;
+          let text: string | null;
+
+          if (!item.columnValue) {
+            text = null;
+          } else if (column.value.formatFunc) {
+            text = column.value.formatFunc(item.columnValue);
+          } else {
+            text = item.columnValue;
+          }
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex) {
+          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.originalText === originalText) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {
             // Add a new entry for a new or first occurrence
+
             accumulator.push({
               type: 'column',
               isIndex: item.value === 'index',
               text,
+              originalText,
               count: 1,
               cssClass: item.cssClass ?? '',
             });
@@ -120,7 +131,14 @@ export default function useHeaders(
 
           return accumulator;
         },
-        [] as { text: string | null; count: number; type: string; isIndex: boolean; cssClass: string }[],
+        [] as {
+          text: string | null;
+          count: number;
+          type: string;
+          isIndex: boolean;
+          cssClass: string;
+          originalText: string | null;
+        }[],
       );
 
       parentGroups.push(resultArray);

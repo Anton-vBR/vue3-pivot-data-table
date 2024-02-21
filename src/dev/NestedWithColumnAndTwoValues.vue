@@ -46,6 +46,7 @@ const rows: Row[] = [
 const column: Column = {
   text: 'Fruit',
   value: 'fruit',
+  formatFunc: (x: any) => 'Hej!' + x,
 };
 
 const values: Value[] = [
@@ -53,7 +54,8 @@ const values: Value[] = [
     text: 'Outcome',
     value: 'sales',
     sortable: true,
-    format: { style: 'currency', currency: 'SEK', minimumFractionDigits: 1 },
+    // formatFunc: new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK', minimumFractionDigits: 1 }).format,
+    numberFormat: { style: 'currency', currency: 'SEK', minimumFractionDigits: 3 },
     parent: {
       text: 'Sales',
     },
@@ -62,7 +64,7 @@ const values: Value[] = [
     text: 'Change',
     value: 'sales_change',
     sortable: true,
-    format: { style: 'percent', minimumFractionDigits: 0 },
+    numberFormat: { style: 'percent', minimumFractionDigits: 0 },
     parent: {
       text: 'Sales',
     },
