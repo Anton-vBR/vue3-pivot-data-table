@@ -25,9 +25,9 @@ export function getItemValue(column: string, item: Item) {
   return item[column];
 }
 
-function applyFormat(content: any, header: HeaderForRender, locale: string) {
+function applyFormat(content: any, header: HeaderForRender, locale: string, nullFillText: string | null) {
   if (content == null) {
-    return null;
+    return nullFillText;
   }
   if (Array.isArray(content)) {
     return content.join(', ');
@@ -46,12 +46,18 @@ function applyFormat(content: any, header: HeaderForRender, locale: string) {
   return content;
 }
 
-export function generateCellContent(header: HeaderForRender, item: Item, locale: string) {
+export function generateCellContent(header: HeaderForRender, item: Item, locale: string, nullFillText: string | null) {
   const content = getItemValue(header.value, item);
-  return applyFormat(content, header, locale);
+  return applyFormat(content, header, locale, nullFillText);
 }
 
-export function generateCellContentBasedOnColumn(header: HeaderForRender, item: Item, column: Column, locale: string) {
+export function generateCellContentBasedOnColumn(
+  header: HeaderForRender,
+  item: Item,
+  column: Column,
+  locale: string,
+  nullFillText: string | null,
+) {
   let content: any;
   if (header.columnValue) {
     content = item.items.find((x: Item) => x[column.value] === header.columnValue)?.[header.value];
@@ -59,5 +65,5 @@ export function generateCellContentBasedOnColumn(header: HeaderForRender, item: 
     content = getItemValue(header.value, item['rows']);
   }
 
-  return applyFormat(content, header, locale);
+  return applyFormat(content, header, locale, nullFillText);
 }

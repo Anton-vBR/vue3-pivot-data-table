@@ -120,11 +120,11 @@
             <slot v-else-if="slots['item']" name="item" v-bind="{ column, item }" />
 
             <template v-else-if="column">
-              {{ generateCellContentBasedOnColumn(header, item, column, locale) }}
+              {{ generateCellContentBasedOnColumn(header, item, column, locale, nullFillText) }}
             </template>
 
             <template v-else>
-              {{ generateCellContent(header, item, locale) }}
+              {{ generateCellContent(header, item, locale, nullFillText) }}
             </template>
           </td>
         </tr>
@@ -244,6 +244,7 @@ const {
   sortType,
   showIndexSymbol,
   showIndexClass,
+  nullFillText,
 } = toRefs(props);
 
 const slots = useSlots();
