@@ -58,7 +58,7 @@
             ]"
             @click.stop="
               header.sortable && header.sortType
-                ? updateSortField(header.value, header.sortType, header.columnValue)
+                ? updateSortField(header.value, header.sortType, false, header.columnValue)
                 : null
             "
           >

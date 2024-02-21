@@ -187,34 +187,37 @@ export default function useHeaders(
   const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
   const updateSortField = (
-    newSortBy: string,
-    oldSortType: SortType | 'none',
+    sortBy: string,
+    receivedSortType: SortType | 'none',
+    assignNewSortType: boolean = false,
     columnValue: string | undefined = undefined,
   ) => {
-    let newSortType: SortType | null = null;
+    let sortType: SortType | null = null;
 
-    if (oldSortType === 'none') {
-      newSortType = 'asc';
-    } else if (oldSortType === 'asc') {
-      newSortType = 'desc';
+    if (assignNewSortType) {
+      sortType = receivedSortType === 'none' ? null : receivedSortType;
+    } else if (receivedSortType === 'none') {
+      sortType = 'asc';
+    } else if (receivedSortType === 'asc') {
+      sortType = 'desc';
     } else {
-      newSortType = mustSort.value ? 'asc' : null;
+      sortType = mustSort.value ? 'asc' : null;
     }
 
-    if (newSortType === null) {
+    if (sortType === null) {
       clientSortOptions.value = null;
     } else {
       clientSortOptions.value = {
-        sortBy: newSortBy,
-        sortDesc: newSortType === 'desc',
+        sortBy,
+        sortDesc: sortType === 'desc',
         columnValue,
       };
     }
 
     emits('updateSort', {
       columnValue: columnValue,
-      sortType: newSortType,
-      sortBy: newSortBy,
+      sortType,
+      sortBy,
     });
   };
 
