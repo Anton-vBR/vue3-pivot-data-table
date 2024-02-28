@@ -136,7 +136,7 @@ export default function useTotalItems(
     const itemsFilteringSorted = [...itemsFiltering.value];
 
     const { sortBy, sortDesc, columnValue } = clientSortOptions.value;
-    const { sortFunc } = headersForRender.value.find((x) => x.value === sortBy)!;
+    const sortFunc = headersForRender.value.find((x) => x.value === sortBy)?.sortFunc;
 
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     const sortedItems = itemsFilteringSorted.sort((a, b) => {
