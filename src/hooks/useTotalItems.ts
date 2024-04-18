@@ -161,9 +161,9 @@ export default function useTotalItems(
       }
 
       // Check for null values
-      if (aValue === null && bValue !== null) return 1; // a is null, b is not, a goes last
-      if (aValue !== null && bValue === null) return -1; // b is null, a is not, b goes last
-      if (aValue === null && bValue === null) return 0; // both are null, keep original order
+      if (aValue == null && bValue != null) return 1; // a is null, b is not, a goes last
+      if (aValue != null && bValue == null) return -1; // b is null, a is not, b goes last
+      if (aValue == null && bValue == null) return 0; // both are null, keep original order
 
       // Regular comparison
       if (aValue < bValue) return sortDesc ? 1 : -1;
