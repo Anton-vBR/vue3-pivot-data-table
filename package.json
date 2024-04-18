@@ -2,7 +2,7 @@
   "name": "vue3-pivot-data-table",
   "author": "anton-vbr",
   "private": false,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A non-aggregating Vue3 table component for presenting pivot-like data",
   "type": "module",
   "types": "./types/main.d.ts",
