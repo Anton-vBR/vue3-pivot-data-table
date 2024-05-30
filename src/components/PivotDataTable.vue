@@ -34,6 +34,8 @@
                 v-bind="header"
               />
 
+              <slot v-else-if="slots[`header-${header.type}`]" :name="`header-${header.type}`" v-bind="header" />
+
               <slot v-else-if="slots['header']" name="header" v-bind="header" />
               <span v-else class="header-text"> {{ header.text }} </span>
             </span>
@@ -114,7 +116,13 @@
             <slot
               v-if="slots[`item-${header.value}`]"
               :name="`item-${header.value}`"
-              v-bind="column ? item.items.find((x: Item) => x[column.value] === header.columnValue) : item"
+              v-bind="
+                column && header.columnValue
+                  ? item.items.find((x: Item) => x[column.value] === header.columnValue)
+                  : column
+                  ? item['rows']
+                  : item
+              "
             />
 
             <slot v-else-if="slots['item']" name="item" v-bind="{ column, item }" />
