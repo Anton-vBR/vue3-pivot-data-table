@@ -135,7 +135,7 @@ export default function useTotalItems(
 
     const itemsFilteringSorted = [...itemsFiltering.value];
 
-    const { sortBy, sortDesc, columnValue } = clientSortOptions.value;
+    const { sortBy, sortDesc, sortColumnValue } = clientSortOptions.value;
     const sortFunc = headersForRender.value.find((x) => x.value === sortBy)?.sortFunc;
 
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -144,13 +144,13 @@ export default function useTotalItems(
       let bValue;
 
       if (column.value) {
-        if (columnValue) {
+        if (sortColumnValue) {
           aValue = sortFunc
-            ? sortFunc(a.items.find((x: Item) => x[column.value.value] === columnValue)?.[sortBy])
-            : a.items.find((x: Item) => x[column.value.value] === columnValue)?.[sortBy];
+            ? sortFunc(a.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy])
+            : a.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy];
           bValue = sortFunc
-            ? sortFunc(b.items.find((x: Item) => x[column.value.value] === columnValue)?.[sortBy])
-            : b.items.find((x: Item) => x[column.value.value] === columnValue)?.[sortBy];
+            ? sortFunc(b.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy])
+            : b.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy];
         } else {
           aValue = sortFunc ? sortFunc(a.rows[sortBy]) : a.rows[sortBy];
           bValue = sortFunc ? sortFunc(b.rows[sortBy]) : b.rows[sortBy];

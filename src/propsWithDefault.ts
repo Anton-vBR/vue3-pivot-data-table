@@ -132,6 +132,11 @@ export default {
     default: 'asc',
     description: 'Sort type or types (ascending or descending).',
   },
+  sortColumnValue: {
+    type: String as PropType<SortType>,
+    default: '',
+    description: 'Sort columnValue when column is active',
+  },
   tableClassName: {
     type: String,
     default: '',
