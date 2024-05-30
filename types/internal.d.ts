@@ -30,7 +30,7 @@ export type HeaderForRender = {
 export type ClientSortOptions = {
   sortBy: string;
   sortDesc: boolean;
-  columnValue?: string;
+  sortColumnValue?: string;
 };
 
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected';

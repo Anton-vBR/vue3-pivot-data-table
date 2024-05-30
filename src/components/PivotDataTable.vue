@@ -242,9 +242,11 @@ const {
   showIndex,
   sortBy,
   sortType,
+  sortColumnValue,
   showIndexSymbol,
   showIndexClass,
   nullFillText,
+  hideFooter,
 } = toRefs(props);
 
 const slots = useSlots();
@@ -262,6 +264,7 @@ const { clientSortOptions, headersForRenderParents, headersForRender, updateSort
   showIndexClass,
   sortBy,
   sortType,
+  sortColumnValue,
   emits,
 );
 

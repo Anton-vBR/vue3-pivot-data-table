@@ -13,6 +13,7 @@ export default function useHeaders(
   showIndexClass: Ref<string>,
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
+  sortColumnValue: Ref<string>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const columnDomain = computed<string[]>(() => {
@@ -24,17 +25,24 @@ export default function useHeaders(
   });
 
   // eslint-disable-next-line max-len
-  const generateClientSortOptions = (sortByValue: string, sortTypeValue: SortType): ClientSortOptions | null => {
+  const generateClientSortOptions = (
+    sortByValue: string,
+    sortTypeValue: SortType,
+    sortColumnValueValue: string,
+  ): ClientSortOptions | null => {
     if (sortByValue && sortByValue !== '') {
       return {
         sortBy: sortByValue,
         sortDesc: sortTypeValue === 'desc',
+        sortColumnValue: sortColumnValueValue,
       };
     }
     return null;
   };
 
-  const clientSortOptions = ref<ClientSortOptions | null>(generateClientSortOptions(sortBy.value, sortType.value));
+  const clientSortOptions = ref<ClientSortOptions | null>(
+    generateClientSortOptions(sortBy.value, sortType.value, sortColumnValue.value),
+  );
 
   let fixedHeaders: HeaderForRender[] = [];
   const headersForRender = computed((): HeaderForRender[] => {
@@ -65,9 +73,9 @@ export default function useHeaders(
       if (
         clientSortOptions.value &&
         headerSorting.value === clientSortOptions.value.sortBy &&
-        clientSortOptions.value.columnValue
+        clientSortOptions.value.sortColumnValue
       ) {
-        if (clientSortOptions.value.columnValue === headerSorting.columnValue) {
+        if (clientSortOptions.value.sortColumnValue === headerSorting.columnValue) {
           headerSorting.sortType = clientSortOptions.value.sortDesc ? 'desc' : 'asc';
         } else {
           headerSorting.sortType = 'none';
@@ -190,7 +198,7 @@ export default function useHeaders(
     sortBy: string,
     receivedSortType: SortType | 'none',
     assignNewSortType: boolean = false,
-    columnValue: string | undefined = undefined,
+    sortColumnValue: string | undefined = undefined,
   ) => {
     let sortType: SortType | null = null;
 
@@ -210,12 +218,12 @@ export default function useHeaders(
       clientSortOptions.value = {
         sortBy,
         sortDesc: sortType === 'desc',
-        columnValue,
+        sortColumnValue,
       };
     }
 
     emits('updateSort', {
-      columnValue: columnValue,
+      sortColumnValue,
       sortType,
       sortBy,
     });
