@@ -159,6 +159,8 @@
     </div>
   </slot>
 
+  <slot v-else-if="loading" name="loading"> Slot: loading </slot>
+
   <slot v-else-if="!items.length && !loading && noRowsCustom" name="no-rows-custom"> Slot: no-rows-custom </slot>
 
   <slot v-else-if="!items.length && !loading" name="no-rows">
