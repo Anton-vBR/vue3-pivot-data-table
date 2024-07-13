@@ -1,6 +1,7 @@
-# Docs
+# Docs and coverage
 docs/.vitepress/cache
 docs/.vitepress/dist
+coverage/
 
 # Logs
 logs
@@ -15,6 +16,9 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# ssh
+.ssh
 
 # Editor directories and files
 .vscode/*
