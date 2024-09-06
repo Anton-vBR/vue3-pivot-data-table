@@ -91,11 +91,7 @@
           v-for="(item, index) in pageItems"
           :id="`row-${index}`"
           :key="index"
-          :class="[
-            { [oddRowClass]: (index + 1) % 2 === 0 },
-            { [evenRowClass]: index % 2 === 0 },
-            ...(customTableRowFunction?.({ index, item }) ?? []),
-          ]"
+          :class="[{ [oddRowClass]: (index + 1) % 2 === 0 }, { [evenRowClass]: index % 2 === 0 }]"
           :role="'button'"
           :tabindex="0"
         >
@@ -112,16 +108,6 @@
                 [header.cssClass ?? '']: true,
                 [header.type ?? '']: true,
               },
-              ...(customTableDataFunction?.({
-                header,
-                item:
-                  column && header.columnValue
-                    ? item.items.find((x: Item) => x[column.value] === header.columnValue)
-                    : column
-                    ? item['rows']
-                    : item,
-                index,
-              }) ?? []),
             ]"
             @click="clickCell(item, headersForRender[i], index, $event)"
             @mouseover="emits('mouseover', item, headersForRender[i], $event)"
