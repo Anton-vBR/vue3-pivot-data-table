@@ -94,7 +94,7 @@
           :class="[
             { [oddRowClass]: (index + 1) % 2 === 0 },
             { [evenRowClass]: index % 2 === 0 },
-            ...(customTableRowFunction?.({ index, item }) ?? []),
+            ...(customTableRowClass?.({ index, item }) ?? []),
           ]"
           :role="'button'"
           :tabindex="0"
@@ -112,7 +112,7 @@
                 [header.cssClass ?? '']: true,
                 [header.type ?? '']: true,
               },
-              ...(customTableDataFunction?.({
+              ...(customTableDataClass?.({
                 header,
                 item:
                   column && header.columnValue
