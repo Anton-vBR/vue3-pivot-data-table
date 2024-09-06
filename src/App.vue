@@ -20,6 +20,7 @@ import SimpleTable from './dev/SimpleTable.vue';
 import SimpleWithColumn from './dev/SimpleWithColumn.vue';
 import SimpleWithColumnAndTwoValues from './dev/SimpleWithColumnAndTwoValues.vue';
 import NestedWithColumnAndTwoValues from './dev/NestedWithColumnAndTwoValues.vue';
+import Colors from './dev/Colors.vue';
 
 const toggleComponent = (component: string) => {
   currentComponent.value = component;
@@ -41,6 +42,10 @@ const components: { name: string; component: Component }[] = [
   {
     name: 'NestedWithColumnAndTwoValues',
     component: NestedWithColumnAndTwoValues,
+  },
+  {
+    name: 'Colors',
+    component: Colors,
   },
 ];
 

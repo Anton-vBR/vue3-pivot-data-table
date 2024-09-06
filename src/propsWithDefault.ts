@@ -117,6 +117,16 @@ export default {
     default: 'odd-row-cell',
     description: 'CSS class applied to cells in odd-numbered rows.',
   },
+  customTableRowClass: {
+    type: Function as PropType<({ index, item }: { index: number; item: Item }) => string[]>,
+    default: () => null,
+    description: 'Custom function to apply classes to tablerows <tr>.',
+  },
+  customTableDataClass: {
+    type: Function as PropType<({ index, item, header }: { index: number; item: Item; header: Value }) => string[]>,
+    default: () => null,
+    description: 'Custom function to apply classes to tablerows <td>.',
+  },
   evenRowCellClass: {
     type: String,
     default: 'even-row-cell',
