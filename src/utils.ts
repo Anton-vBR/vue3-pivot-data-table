@@ -24,7 +24,7 @@ export function getItemValue(pivot: string, item: Item) {
   return item[pivot];
 }
 
-function applyFormat(content: unknown, header: HeaderForRender, locale: string, nullFillText: string | null) {
+function applyFormat(content: any, header: HeaderForRender, locale: string, nullFillText: string | null) {
   if (content == null) {
     return nullFillText;
   }
@@ -57,7 +57,7 @@ export function generateCellContentBasedOnPivot(
   locale: string,
   nullFillText: string | null,
 ) {
-  let content: unknown;
+  let content: any;
   if (header.pivotValue) {
     content = item.items.find((x: Item) => x[pivot.value] === header.pivotValue)?.[header.value];
   } else {

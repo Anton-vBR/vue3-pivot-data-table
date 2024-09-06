@@ -14,7 +14,7 @@ export default function useHeaders(
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
-  emits: (event: EmitsEventName, ...args: unknown[]) => void,
+  emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const pivotDomain = computed<string[]>(() => {
     if (pivot.value) {
