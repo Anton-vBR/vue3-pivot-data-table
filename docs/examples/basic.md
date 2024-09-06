@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import PivotDataTable from '@/src/components/PivotDataTable.vue'
-import { Value, Row, Item } from '@/types/main.d.ts';
+import { Measure, Dimension, Item } from '@/types/main.d.ts';
 
-const rows: Row[] = [{ text: 'Fruit', value: 'fruit' }];
+const rows: Dimension[] = [{ text: 'Fruit', value: 'fruit' }];
 
-const values: Value[] = [{ text: 'Sales', value: 'sales', sortable: true, prefix: '$' }];
+const measures: Measure[] = [{ text: 'Sales', value: 'sales', sortable: true, prefix: '$' }];
 
 const items: Item[] = [
   { fruit: 'Tomato', sales: 30 },
@@ -24,26 +24,26 @@ Define a row (e.g. fruit) and a value (e.g. sales) and add items.
 
 ### Output
 
-<PivotDataTable :items="items" :values="values" :rows="rows" />
+<PivotDataTable :items :measures :dimensions />
 
 ### Input
 
 ```vue
 <template>
     <PivotDataTable 
-        :items="items" 
-        :values="values" 
-        :rows="rows" 
+        :items 
+        :measures 
+        :dimensions 
     />
 </template>
 
 <script setup>
 
-import type { Row, Value, Item } from "vue3-pivot-data-table";
+import type { Dimension, Measure, Item } from "vue3-pivot-data-table";
 
-const rows: Row[] = [{ text: 'Fruit', value: 'fruit' }];
+const rows: Dimension[] = [{ text: 'Fruit', value: 'fruit' }];
 
-const values: Value[] = [{ text: 'Sales', value: 'sales', sortable: true}];
+const measures: Measure[] = [{ text: 'Sales', value: 'sales', sortable: true}];
 
 const items: Item[] = [
   { fruit: 'Tomato', sales: 30 },
@@ -62,16 +62,16 @@ Add and set the properties rowsPerPage (-1 to disable pagination) and hideFooter
 
 ### Output
 
-<PivotDataTable :items="items" :values="values" :rows="rows" :rows-per-page="-1" hide-footer />
+<PivotDataTable :items :measures :dimensions :rows-per-page="-1" hide-footer />
 
 ### Input
 
 ```vue{6,7}
 <template>
     <PivotDataTable 
-        :items="items" 
-        :values="values" 
-        :rows="rows"
+        :items 
+        :measures 
+        :dimensions
         :rows-per-page="-1" 
         hide-footer
     />

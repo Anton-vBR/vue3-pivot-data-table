@@ -1,20 +1,19 @@
 import { Ref, computed, watch } from 'vue';
-import type { Item, Column, FilterOption } from '../../types/main';
+import type { Item, Pivot, FilterOption, Dimension, GroupedDimension, HeaderForRender } from '../../types/main';
 // import type { ClientSortOptions, EmitsEventName } from "../types/internal";
 import { getItemValue } from '../utils';
-import { Row, GroupedRow } from '../../types/main';
-import { ClientSortOptions, EmitsEventName, HeaderForRender } from '../../types/internal';
+import { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
 export default function useTotalItems(
   headersForRender: Ref<HeaderForRender[]>,
   clientSortOptions: Ref<ClientSortOptions | null>,
   filterOptions: Ref<FilterOption[]>,
   items: Ref<Item[]>,
-  column: Ref<Column>,
-  rows: Ref<Row[]>,
+  pivot: Ref<Pivot>,
+  dimensions: Ref<Dimension[]>,
   searchField: Ref<string | string[]>,
   searchValue: Ref<string>,
-  emits: (event: EmitsEventName, ...args: any[]) => void,
+  emits: (event: EmitsEventName, ...args: unknown[]) => void,
 ) {
   const generateSearchingTarget = (item: Item): string => {
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
@@ -29,29 +28,29 @@ export default function useTotalItems(
   };
 
   // items searching
-  const itemsSearching = computed((): Item[] | GroupedRow[] => {
-    if (column.value) {
-      const groupByKeys = rows.value.map((x) => x.value);
+  const itemsSearching = computed((): Item[] | GroupedDimension[] => {
+    if (pivot.value) {
+      const groupByKeys = dimensions.value.map((x) => x.value);
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const groupedData: GroupedRow[] = items.value.reduce((result, item) => {
+      const groupedData: GroupedDimension[] = items.value.reduce((result, item) => {
         const key = groupByKeys.map((key) => item[key]).join('|');
-        const existingGroup = result.find((group: GroupedRow) => group.key === key);
+        const existingGroup = result.find((group: GroupedDimension) => group.key === key);
 
         if (existingGroup) {
           existingGroup.items.push(item);
         } else {
-          const rows = Object.fromEntries(Object.entries(item).filter(([key]) => groupByKeys.includes(key)));
-          result.push({ key, rows, items: [item] });
+          const dimensions = Object.fromEntries(Object.entries(item).filter(([key]) => groupByKeys.includes(key)));
+          result.push({ key, dimensions, items: [item] });
         }
 
         return result;
-      }, [] as GroupedRow[]);
+      }, [] as GroupedDimension[]);
 
       if (searchValue.value !== '') {
         const regex = new RegExp(searchValue.value, 'i');
-        return groupedData.filter((item: GroupedRow) => regex.test(item.key));
+        return groupedData.filter((item: GroupedDimension) => regex.test(item.key));
       }
 
       return groupedData;
@@ -64,10 +63,10 @@ export default function useTotalItems(
     return items.value;
   });
   // items filtering
-  const itemsFiltering = computed((): Item[] | GroupedRow[] => {
+  const itemsFiltering = computed((): Item[] | GroupedDimension[] => {
     let itemsFiltered = [...itemsSearching.value];
 
-    if (column.value) {
+    if (pivot.value) {
       return itemsFiltered;
     }
 
@@ -80,7 +79,7 @@ export default function useTotalItems(
             return comparison(getItemValue(field, item), criteria as string);
           }
 
-          const itemValue: any = getItemValue(field, item);
+          const itemValue: Item = getItemValue(field, item);
 
           if (itemValue === null) return false; // added 2023-11-12 to not include null
 
@@ -135,7 +134,7 @@ export default function useTotalItems(
 
     const itemsFilteringSorted = [...itemsFiltering.value];
 
-    const { sortBy, sortDesc, sortColumnValue } = clientSortOptions.value;
+    const { sortBy, sortDesc, sortPivotValue } = clientSortOptions.value;
     const sortFunc = headersForRender.value.find((x) => x.value === sortBy)?.sortFunc;
 
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -143,17 +142,17 @@ export default function useTotalItems(
       let aValue;
       let bValue;
 
-      if (column.value) {
-        if (sortColumnValue) {
+      if (pivot.value) {
+        if (sortPivotValue) {
           aValue = sortFunc
-            ? sortFunc(a.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy])
-            : a.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy];
+            ? sortFunc(a.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy])
+            : a.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy];
           bValue = sortFunc
-            ? sortFunc(b.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy])
-            : b.items.find((x: Item) => x[column.value.value] === sortColumnValue)?.[sortBy];
+            ? sortFunc(b.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy])
+            : b.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy];
         } else {
-          aValue = sortFunc ? sortFunc(a.rows[sortBy]) : a.rows[sortBy];
-          bValue = sortFunc ? sortFunc(b.rows[sortBy]) : b.rows[sortBy];
+          aValue = sortFunc ? sortFunc(a.dimensions[sortBy]) : a.dimensions[sortBy];
+          bValue = sortFunc ? sortFunc(b.dimensions[sortBy]) : b.dimensions[sortBy];
         }
       } else {
         aValue = sortFunc ? sortFunc(getItemValue(sortBy as string, a)) : getItemValue(sortBy as string, a);

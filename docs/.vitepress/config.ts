@@ -30,7 +30,7 @@ export default defineConfig({
         text: 'Examples',
         items: [
           { text: 'Basic', link: '/examples/basic' },
-          { text: 'Column', link: '/examples/column' },
+          { text: 'Pivot', link: '/examples/pivot' },
           { text: 'Error', link: '/examples/error' },
         ],
       },

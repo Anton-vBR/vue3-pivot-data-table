@@ -17,7 +17,7 @@
         <tr v-for="(headerRowGroup, i) in headersForRenderParents" :key="'headerRowGroup' + i">
           <th
             v-for="(header, index) in headerRowGroup"
-            :key="'columnHeader' + index"
+            :key="'pivotHeader' + index"
             :colspan="header.count"
             :class="[
               {
@@ -60,7 +60,7 @@
             ]"
             @click.stop="
               header.sortable && header.sortType
-                ? updateSortField(header.value, header.sortType, false, header.columnValue)
+                ? updateSortField(header.value, header.sortType, false, header.pivotValue)
                 : null
             "
           >
@@ -115,10 +115,10 @@
               ...(customTableDataClass?.({
                 header,
                 item:
-                  column && header.columnValue
-                    ? item.items.find((x: Item) => x[column.value] === header.columnValue)
-                    : column
-                    ? item['rows']
+                  pivot && header.pivotValue
+                    ? item.items.find((x: Item) => x[pivot.value] === header.pivotValue)
+                    : pivot
+                    ? item['dimensions']
                     : item,
                 index,
               }) ?? []),
@@ -131,18 +131,18 @@
               v-if="slots[`item-${header.value}`]"
               :name="`item-${header.value}`"
               v-bind="
-                column && header.columnValue
-                  ? item.items.find((x: Item) => x[column.value] === header.columnValue)
-                  : column
-                  ? item['rows']
+                pivot && header.pivotValue
+                  ? item.items.find((x: Item) => x[pivot.value] === header.pivotValue)
+                  : pivot
+                  ? item['dimensions']
                   : item
               "
             />
 
-            <slot v-else-if="slots['item']" name="item" v-bind="{ column, item }" />
+            <slot v-else-if="slots['item']" name="item" v-bind="{ pivot, item }" />
 
-            <template v-else-if="column">
-              {{ generateCellContentBasedOnColumn(header, item, column, locale, nullFillText) }}
+            <template v-else-if="pivot">
+              {{ generateCellContentBasedOnPivot(header, item, pivot, locale, nullFillText) }}
             </template>
 
             <template v-else>
@@ -225,8 +225,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, useSlots, provide, watch, onMounted } from 'vue';
-import type { Item } from '../../types/main';
-import type { HeaderForRender } from '../../types/internal';
+import type { HeaderForRender, Item } from '../../types/main';
 
 import propsWithDefault from '../propsWithDefault';
 
@@ -238,7 +237,7 @@ import usePageItems from '../hooks/usePageItems';
 
 import tEmits from '../emits';
 
-import { generateCellContent, generateCellContentBasedOnColumn } from '../utils';
+import { generateCellContent, generateCellContentBasedOnPivot } from '../utils';
 
 const errors = ref<{ type: string; text: string }[]>([]);
 const dataTable = ref();
@@ -247,9 +246,9 @@ provide('dataTable', dataTable);
 const props = defineProps(propsWithDefault);
 
 const {
-  values,
-  rows,
-  column,
+  measures,
+  dimensions,
+  pivot,
   locale,
   tableNodeId,
   currentPage,
@@ -266,11 +265,13 @@ const {
   showIndex,
   sortBy,
   sortType,
-  sortColumnValue,
+  sortPivotValue,
   showIndexSymbol,
   showIndexClass,
   nullFillText,
   hideFooter,
+  customTableRowClass,
+  customTableDataClass,
 } = toRefs(props);
 
 const slots = useSlots();
@@ -280,15 +281,15 @@ const emits = defineEmits(tEmits);
 const { clientSortOptions, headersForRenderParents, headersForRender, updateSortField } = useHeaders(
   items,
   showIndexSymbol,
-  rows,
-  values,
-  column,
+  dimensions,
+  measures,
+  pivot,
   mustSort,
   showIndex,
   showIndexClass,
   sortBy,
   sortType,
-  sortColumnValue,
+  sortPivotValue,
   emits,
 );
 
@@ -298,8 +299,8 @@ const { totalItems, totalItemsLength } = useTotalItems(
   clientSortOptions,
   filterOptions,
   items,
-  column,
-  rows,
+  pivot,
+  dimensions,
   searchField,
   searchValue,
   emits,
@@ -316,7 +317,7 @@ const { currentPageFirstIndex, currentPageLastIndex, pageItems } = usePageItems(
   rowsPerPageRef,
   showIndex,
   totalItems,
-  column,
+  pivot,
 );
 
 const clickCell = (item: Item, header: HeaderForRender, index: number, $event: MouseEvent) => {
@@ -332,24 +333,24 @@ watch([searchValue, filterOptions], () => {
 });
 
 watch(
-  [items, column],
+  [items, pivot],
   () => {
-    columnDataChecks();
+    pivotDataChecks();
   },
   { immediate: true },
 );
 
-// fixed-columns shadow -- work in progress -- TODO
+// fixed-pivots shadow -- work in progress -- TODO
 const showShadow = ref(false);
 
-function columnDataChecks() {
+function pivotDataChecks() {
   errors.value = [];
-  if (column.value && Array.isArray(column.value)) {
+  if (pivot.value && Array.isArray(pivot.value)) {
     errors.value.push({
       type: 'propError',
-      text: 'column is of type Array',
+      text: 'pivot is of type Array',
     });
-  } else if (column.value && duplicatesExist()) {
+  } else if (pivot.value && duplicatesExist()) {
     errors.value.push({
       type: 'dataShapeError',
       text: 'duplicate item Objects (by rows * columns) found in items',
@@ -385,10 +386,10 @@ defineExpose(expose);
 
 // Function that checks if duplicate..
 function duplicatesExist(): boolean {
-  const dimensions = [...rows.value.map((x) => x.value), column.value.value];
+  const dims = [...dimensions.value.map((x) => x.value), pivot.value.value];
   const duplicateSet = new Set();
   for (let i = 0; i < items.value.length; i++) {
-    const shouldBeUnique = dimensions.map((x) => items.value[i][x]).join('|');
+    const shouldBeUnique = dims.map((x) => items.value[i][x]).join('|');
     if (duplicateSet.has(shouldBeUnique)) {
       return true;
     }

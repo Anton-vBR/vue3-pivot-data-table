@@ -1,9 +1,8 @@
-import { HeaderForRender } from '../types/internal';
-import { Item, Column } from '../types/main';
+import { Item, Pivot, HeaderForRender } from '../types/main';
 
-export function getItemValue(column: string, item: Item) {
-  if (column.includes('.')) {
-    const keys = column.split('.');
+export function getItemValue(pivot: string, item: Item) {
+  if (pivot.includes('.')) {
+    const keys = pivot.split('.');
     const { length } = keys;
 
     let content;
@@ -22,10 +21,10 @@ export function getItemValue(column: string, item: Item) {
     }
     return content ?? '';
   }
-  return item[column];
+  return item[pivot];
 }
 
-function applyFormat(content: any, header: HeaderForRender, locale: string, nullFillText: string | null) {
+function applyFormat(content: unknown, header: HeaderForRender, locale: string, nullFillText: string | null) {
   if (content == null) {
     return nullFillText;
   }
@@ -51,18 +50,18 @@ export function generateCellContent(header: HeaderForRender, item: Item, locale:
   return applyFormat(content, header, locale, nullFillText);
 }
 
-export function generateCellContentBasedOnColumn(
+export function generateCellContentBasedOnPivot(
   header: HeaderForRender,
   item: Item,
-  column: Column,
+  pivot: Pivot,
   locale: string,
   nullFillText: string | null,
 ) {
-  let content: any;
-  if (header.columnValue) {
-    content = item.items.find((x: Item) => x[column.value] === header.columnValue)?.[header.value];
+  let content: unknown;
+  if (header.pivotValue) {
+    content = item.items.find((x: Item) => x[pivot.value] === header.pivotValue)?.[header.value];
   } else {
-    content = getItemValue(header.value, item['rows']);
+    content = getItemValue(header.value, item['dimensions']);
   }
 
   return applyFormat(content, header, locale, nullFillText);

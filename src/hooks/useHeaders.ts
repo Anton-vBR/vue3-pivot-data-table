@@ -1,24 +1,24 @@
 import { ref, Ref, computed } from 'vue';
-import { Item, Value, Column, SortType, Row } from '../../types/main';
-import type { HeaderForRender, ClientSortOptions, EmitsEventName } from '../../types/internal';
+import { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
+import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
 export default function useHeaders(
   items: Ref<Item[]>,
   showIndexSymbol: Ref<string>,
-  rows: Ref<Row[]>,
-  values: Ref<Value[]>,
-  column: Ref<Column>,
+  dimensions: Ref<Dimension[]>,
+  measures: Ref<Measure[]>,
+  pivot: Ref<Pivot>,
   mustSort: Ref<boolean>,
   showIndex: Ref<boolean>,
   showIndexClass: Ref<string>,
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
-  sortColumnValue: Ref<string>,
-  emits: (event: EmitsEventName, ...args: any[]) => void,
+  sortPivotValue: Ref<string>,
+  emits: (event: EmitsEventName, ...args: unknown[]) => void,
 ) {
-  const columnDomain = computed<string[]>(() => {
-    if (column.value) {
-      return [...new Set(items.value.map((item) => item[column.value.value]))];
+  const pivotDomain = computed<string[]>(() => {
+    if (pivot.value) {
+      return [...new Set(items.value.map((item) => item[pivot.value.value]))];
     } else {
       return [];
     }
@@ -28,40 +28,40 @@ export default function useHeaders(
   const generateClientSortOptions = (
     sortByValue: string,
     sortTypeValue: SortType,
-    sortColumnValueValue: string,
+    sortPivotValueValue: string,
   ): ClientSortOptions | null => {
     if (sortByValue && sortByValue !== '') {
       return {
         sortBy: sortByValue,
         sortDesc: sortTypeValue === 'desc',
-        sortColumnValue: sortColumnValueValue,
+        sortPivotValue: sortPivotValueValue,
       };
     }
     return null;
   };
 
   const clientSortOptions = ref<ClientSortOptions | null>(
-    generateClientSortOptions(sortBy.value, sortType.value, sortColumnValue.value),
+    generateClientSortOptions(sortBy.value, sortType.value, sortPivotValue.value),
   );
 
   let fixedHeaders: HeaderForRender[] = [];
   const headersForRender = computed((): HeaderForRender[] => {
-    if (column.value) {
-      const headers: HeaderForRender[] = columnDomain.value.flatMap((columnValue: string) => {
-        const headerGroup: HeaderForRender[] = values.value.map((obj) => ({
+    if (pivot.value) {
+      const headers: HeaderForRender[] = pivotDomain.value.flatMap((pivotValue: string) => {
+        const headerGroup: HeaderForRender[] = measures.value.map((obj) => ({
           ...obj,
-          columnValue,
+          pivotValue,
         }));
         return headerGroup;
       });
       fixedHeaders = [
-        ...(rows.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
+        ...(dimensions.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
         ...(headers.map((x) => ({ ...x, type: 'tableValue' })) as HeaderForRender[]),
       ];
     } else {
       fixedHeaders = [
-        ...(rows.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
-        ...(values.value.map((x) => ({ ...x, type: 'tableValue' })) as HeaderForRender[]),
+        ...(dimensions.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
+        ...(measures.value.map((x) => ({ ...x, type: 'tableValue' })) as HeaderForRender[]),
       ];
     }
 
@@ -73,9 +73,9 @@ export default function useHeaders(
       if (
         clientSortOptions.value &&
         headerSorting.value === clientSortOptions.value.sortBy &&
-        clientSortOptions.value.sortColumnValue
+        clientSortOptions.value.sortPivotValue
       ) {
-        if (clientSortOptions.value.sortColumnValue === headerSorting.columnValue) {
+        if (clientSortOptions.value.sortPivotValue === headerSorting.pivotValue) {
           headerSorting.sortType = clientSortOptions.value.sortDesc ? 'desc' : 'asc';
         } else {
           headerSorting.sortType = 'none';
@@ -106,18 +106,18 @@ export default function useHeaders(
   const headersForRenderParents = computed(() => {
     const parentGroups = [];
 
-    if (column.value) {
+    if (pivot.value) {
       const resultArray = headersForRender.value.reduce(
         (accumulator, item) => {
-          const originalText: string | null = item.columnValue;
+          const originalText: string | null = item.pivotValue;
           let text: string | null;
 
-          if (!item.columnValue) {
+          if (!item.pivotValue) {
             text = null;
-          } else if (column.value.formatFunc) {
-            text = column.value.formatFunc(item.columnValue);
+          } else if (pivot.value.formatFunc) {
+            text = pivot.value.formatFunc(item.pivotValue);
           } else {
-            text = item.columnValue;
+            text = item.pivotValue;
           }
 
           const lastEntry = accumulator[accumulator.length - 1];
@@ -128,7 +128,7 @@ export default function useHeaders(
             // Add a new entry for a new or first occurrence
 
             accumulator.push({
-              type: 'column',
+              type: 'pivot',
               isIndex: item.value === 'index',
               text,
               originalText,
@@ -156,10 +156,10 @@ export default function useHeaders(
       const resultArray = headersForRender.value.reduce(
         (accumulator, item) => {
           const text = item.parent?.text || null;
-          const columnValue = item.columnValue;
+          const pivotValue = item.pivotValue;
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.columnValue === columnValue) {
+          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.pivotValue === pivotValue) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {
@@ -167,7 +167,7 @@ export default function useHeaders(
             accumulator.push({
               type: 'parent',
               isIndex: item.value === 'index',
-              columnValue,
+              pivotValue,
               text,
               count: 1,
               cssClass: item.cssClass ?? '',
@@ -182,7 +182,7 @@ export default function useHeaders(
           type: string;
           isIndex: boolean;
           cssClass: string;
-          columnValue: string;
+          pivotValue: string;
         }[],
       );
 
@@ -198,7 +198,7 @@ export default function useHeaders(
     sortBy: string,
     receivedSortType: SortType | 'none',
     assignNewSortType: boolean = false,
-    sortColumnValue: string | undefined = undefined,
+    sortPivotValue: string | undefined = undefined,
   ) => {
     let sortType: SortType | null = null;
 
@@ -218,19 +218,18 @@ export default function useHeaders(
       clientSortOptions.value = {
         sortBy,
         sortDesc: sortType === 'desc',
-        sortColumnValue,
+        sortPivotValue,
       };
     }
 
     emits('updateSort', {
-      sortColumnValue,
+      sortPivotValue,
       sortType,
       sortBy,
     });
   };
 
   return {
-    columnDomain,
     clientSortOptions,
     headerColumns,
     headersForRenderParents,

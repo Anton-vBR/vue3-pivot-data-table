@@ -29,14 +29,14 @@ export type FilterOption =
       criteria: string;
     };
 
-export type Column = {
+export type Pivot = {
   text: string;
   value: string;
   cssClass?: string;
   formatFunc?: any;
 };
 
-export type Row = {
+export type Dimension = {
   text: string;
   value: string;
   sortable?: boolean;
@@ -46,20 +46,20 @@ export type Row = {
   formatFunc?: any;
 };
 
-export type GroupedRow = {
+export type GroupedDimension = {
   key: string;
-  rows: Row[];
+  dimensions: Dimension[];
   items: Item[];
 };
 
-export type Value = {
+export type Measure = {
   text: string;
   value: string;
   sortable?: boolean;
   fixed?: boolean;
   width?: number;
-  type?: 'row' | 'column';
-  columnValue?: string;
+  type?: 'dimension' | 'pivot';
+  pivotValue?: string;
   sortFunc?: any;
   formatFunc?: any;
   numberFormat?: any;
@@ -73,4 +73,24 @@ export type Value = {
 export type UpdateSortArgument = {
   sortType: SortType | null;
   sortBy: string;
+};
+
+export type HeaderForRender = {
+  text: string;
+  value: string;
+  sortable?: boolean;
+  sortType?: SortType | 'none';
+  fixed?: boolean;
+  width?: number;
+  sortFunc?: any;
+  hoverable?: boolean;
+  clickable?: boolean;
+  parent?: { text: string };
+  pivotValue?: any;
+  cssClass?: string;
+  type?: string;
+  formatFunc?: any;
+  numberFormat?: any;
+  prefix?: string;
+  suffix?: string;
 };

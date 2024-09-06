@@ -1,5 +1,5 @@
 import { PropType } from 'vue';
-import type { SortType, Row, Column, FilterOption, Item, Value } from '../types/main';
+import type { SortType, Dimension, Pivot, FilterOption, Item, Measure, HeaderForRender } from '../types/main';
 
 export default {
   items: {
@@ -8,21 +8,21 @@ export default {
     required: true,
     description: 'Array of data objects, should be a flat array.',
   },
-  values: {
-    type: Array as PropType<Value[]>,
+  measures: {
+    type: Array as PropType<Measure[]>,
     default: () => [],
     required: true,
-    description: 'Array of value objects representing the metrics',
+    description: 'Array of Measure objects representing the metrics',
   },
-  rows: {
-    type: Array as PropType<Row[]>,
+  dimensions: {
+    type: Array as PropType<Dimension[]>,
     default: () => [],
-    description: 'Array of row objects representing the dimensions on rows',
+    description: 'Array of Dimension objects representing the row-dimensions',
   },
-  column: {
-    type: Object as PropType<Column>,
+  pivot: {
+    type: Object as PropType<Pivot>,
     default: null,
-    description: 'Single column object representing the dimension on columns',
+    description: 'Single Pivot object representing the column-dimension. Limited to 1 for reduced complexity.',
   },
   locale: {
     type: String,
@@ -123,7 +123,9 @@ export default {
     description: 'Custom function to apply classes to tablerows <tr>.',
   },
   customTableDataClass: {
-    type: Function as PropType<({ index, item, header }: { index: number; item: Item; header: Value }) => string[]>,
+    type: Function as PropType<
+      ({ index, item, header }: { index: number; item: Item; header: HeaderForRender }) => string[]
+    >,
     default: () => null,
     description: 'Custom function to apply classes to tablerows <td>.',
   },
@@ -142,10 +144,10 @@ export default {
     default: 'asc',
     description: 'Sort type or types (ascending or descending).',
   },
-  sortColumnValue: {
+  sortPivotValue: {
     type: String as PropType<SortType>,
     default: '',
-    description: 'Sort columnValue when column is active',
+    description: 'Sort pivotValue when pivot is active',
   },
   tableClassName: {
     type: String,

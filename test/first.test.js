@@ -5,14 +5,14 @@ import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import PivotDataTable from '../src/components/PivotDataTable.vue';
 
-const rows = [
+const dimensions = [
   {
     text: 'Fruit',
     value: 'fruit',
   },
 ];
 
-const values = [
+const measures = [
   {
     text: 'Sales',
     value: 'sales',
@@ -51,8 +51,8 @@ describe('Items', () => {
     const wrapper = mount(PivotDataTable, {
       props: {
         items,
-        values,
-        rows,
+        measures,
+        dimensions,
         rowsPerPage: 5,
       },
     });
@@ -68,8 +68,8 @@ describe('Button Pagination', () => {
     const wrapper = mount(PivotDataTable, {
       props: {
         items,
-        values,
-        rows,
+        measures,
+        dimensions,
         rowsPerPage: 5,
       },
     });

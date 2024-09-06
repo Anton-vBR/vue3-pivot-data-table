@@ -17,10 +17,10 @@ import { ref } from 'vue';
 import type { Component } from 'vue';
 
 import SimpleTable from './dev/SimpleTable.vue';
-import SimpleWithColumn from './dev/SimpleWithColumn.vue';
-import SimpleWithColumnAndTwoValues from './dev/SimpleWithColumnAndTwoValues.vue';
-import NestedWithColumnAndTwoValues from './dev/NestedWithColumnAndTwoValues.vue';
-import Colors from './dev/Colors.vue';
+import SimpleWithPivot from './dev/SimpleWithPivot.vue';
+import SimpleWithPivotAndTwoValues from './dev/SimpleWithPivotAndTwoValues.vue';
+import NestedWithPivotAndTwoValues from './dev/NestedWithPivotAndTwoValues.vue';
+import Colors from './dev/TableColors.vue';
 
 const toggleComponent = (component: string) => {
   currentComponent.value = component;
@@ -32,16 +32,16 @@ const components: { name: string; component: Component }[] = [
     component: SimpleTable,
   },
   {
-    name: 'SimpleWithColumn',
-    component: SimpleWithColumn,
+    name: 'SimpleWithPivot',
+    component: SimpleWithPivot,
   },
   {
-    name: 'SimpleWithColumnAndTwoValues',
-    component: SimpleWithColumnAndTwoValues,
+    name: 'SimpleWithPivotAndTwoValues',
+    component: SimpleWithPivotAndTwoValues,
   },
   {
-    name: 'NestedWithColumnAndTwoValues',
-    component: NestedWithColumnAndTwoValues,
+    name: 'NestedWithPivotAndTwoValues',
+    component: NestedWithPivotAndTwoValues,
   },
   {
     name: 'Colors',

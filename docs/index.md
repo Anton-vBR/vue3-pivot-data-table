@@ -32,9 +32,33 @@ hero:
 
 <div class="drag-drop-container">
     <div class="group">
-      <h2>Dimensions</h2>
-      <div class="dimensions" @drop="addToDimensions" @dragover.prevent>
+      <h2>Fields</h2>
+      <div class="fields" @drop="addToFields" @dragover.prevent>
         <h3>Not in use</h3>
+        <button
+          v-for="field in fields"
+          :key="field.id"
+          class="field"
+          draggable="true"
+          @dragstart="dragStart(field, 'fields')"
+        >
+          Field: {{ field.text }}
+        </button>
+      </div>
+      <div class="pivots" @drop="addToPivots" @dragover.prevent>
+        <h3>Pivot</h3>
+        <button
+          v-for="pivot in pivots"
+          :key="pivot.id"
+          class="pivots"
+          draggable="true"
+          @dragstart="dragStart(pivot, 'pivots')"
+        >
+          Field: {{ pivot.text }}
+        </button>
+      </div>
+      <div class="dimensions" @drop="addToDimensions" @dragover.prevent>
+        <h3>Dimension</h3>
         <button
           v-for="dimension in dimensions"
           :key="dimension.id"
@@ -42,59 +66,35 @@ hero:
           draggable="true"
           @dragstart="dragStart(dimension, 'dimensions')"
         >
-          Dim: {{ dimension.text }}
-        </button>
-      </div>
-      <div class="columns" @drop="addToColumns" @dragover.prevent>
-        <h3>Columns</h3>
-        <button
-          v-for="column in columns"
-          :key="column.id"
-          class="dimension"
-          draggable="true"
-          @dragstart="dragStart(column, 'columns')"
-        >
-          Dim: {{ column.text }}
-        </button>
-      </div>
-      <div class="rows" @drop="addToRows" @dragover.prevent>
-        <h3>Rows</h3>
-        <button
-          v-for="row in rows"
-          :key="row.id"
-          class="dimension"
-          draggable="true"
-          @dragstart="dragStart(row, 'rows')"
-        >
-          Dim: {{ row.text }}
+          Field: {{ dimension.text }}
         </button>
       </div>
     </div>
 
   <div class="group">
-    <h2>Values</h2>
-    <div class="values" @drop="addToValues" @dragover.prevent>
+    <h2>Measures</h2>
+    <div class="measures" @drop="addToMeasures" @dragover.prevent>
       <h3>Not in use</h3>
       <button
-        v-for="value in availableValues"
-        :key="value.id"
-        class="value"
+        v-for="measure in availableMeasures"
+        :key="measure.id"
+        class="measure"
         draggable="true"
-        @dragstart="dragStart(value, 'availableValues')"
+        @dragstart="dragStart(measure, 'availableMeasures')"
       >
-        Value: {{ value.parent.text + ' ' + value.text }}
+        Measure: {{ measure.parent.text + ' ' + measure.text }}
       </button>
     </div>
-    <div class="values-zone" @drop="addToValuesZone" @dragover.prevent>
-        <h3>Values</h3>
+    <div class="measures-zone" @drop="addToMeasuresZone" @dragover.prevent>
+        <h3>Measures</h3>
       <button
-        v-for="value in values"
-        :key="value.id"
-        class="value"
+        v-for="measure in measures"
+        :key="measure.id"
+        class="measure"
         draggable="true"
-        @dragstart="dragStart(value, 'values')"
+        @dragstart="dragStart(measure, 'measures')"
       >
-        Value: {{  value.parent.text + ' ' + value.text }}
+        Measure: {{  measure.parent.text + ' ' + measure.text }}
       </button>
     </div>
   </div>
@@ -114,10 +114,10 @@ hero:
 <PivotDataTable
     table-class-name="myWrapperClass"
     inner-table-class-name="myTableClass"
-    :rows="rows"
-    :values="values"
-    :items="items"
-    :column="columns[0]"
+    :dimensions 
+    :measures 
+    :items 
+    :pivot="pivots[0]"
     :rows-per-page="-1"
     hide-footer
     :show-index="showIndex"
@@ -146,18 +146,27 @@ hero:
 
 
 <script setup lang="ts">
-import mockItems from '@/mock/fruits.ts'
-import PivotDataTable from '@/src/components/PivotDataTable.vue'
-import { ref } from 'vue'
-import { Value, Item, Row, Column } from '@/types/main.d.ts';
+import mockItems from '@/mock/fruits.ts';
+import PivotDataTable from '@/src/components/PivotDataTable.vue';
+import { ref } from 'vue';
+import { Measure, Item, Dimension, Pivot } from '@/types/main.d.ts';
 
-  const dimensions = ref([{
-  text: 'Fruit',
-  value: 'fruit',
-}]);
-    const columns = ref([]);
-    const rows = ref([
+const fields = ref([
+  {
+    text: 'Fruit',
+    value: 'fruit',
+  },
 
+]);
+const pivots = ref([
+  // {
+  //   text: 'Fruit',
+  //   value: 'fruit',
+  // },
+
+]);
+
+const dimensions = ref([
   {
     text: 'Weekday',
     value: 'weekday',
@@ -169,18 +178,17 @@ import { Value, Item, Row, Column } from '@/types/main.d.ts';
   },
 ]);
 
-    const availableValues = ref([ {
+const availableMeasures = ref([
+  {
     text: 'Change',
     value: 'sales_change',
     sortable: true,
     numberFormat: { style: 'percent', minimumFractionDigits: 0 },
-    parent: {
-      text: 'Sales',
-    },
-  },]);
+    parent: { text: 'Sales' },
+  },
+]);
 
-    const values = ref(
-      [
+const measures = ref([
   {
     text: 'Outcome',
     value: 'sales',
@@ -190,7 +198,7 @@ import { Value, Item, Row, Column } from '@/types/main.d.ts';
       text: 'Sales',
     },
   },
- 
+
   {
     text: 'Outcome',
     value: 'units',
@@ -200,90 +208,90 @@ import { Value, Item, Row, Column } from '@/types/main.d.ts';
     },
     suffix: ' pcs',
   },
-]
-    );
+]);
 
-    const dragStart = (item, origin) => {
-      event.dataTransfer.setData('item', JSON.stringify({ item, origin }));
-    };
+const dragStart = (item, origin) => {
+  event.dataTransfer.setData('item', JSON.stringify({ item, origin }));
+};
 
-    const addToColumns = () => {
-      const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
+const addToPivots = () => {
+  const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
 
-      if (columns.value.length > 0) {
-        window.alert('max 1 column')
-        return
-      }
-      if (item.parent) {
-        window.alert('no values allowed')
-        return
-      }
-      columns.value.push(item);
-      removeFromOrigin(item, origin);
-    };
 
-    const addToRows = () => {
-      const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
-           if (item.parent) {
-        window.alert('no values allowed')
-        return
-      }
-      rows.value.push(item);
-      removeFromOrigin(item, origin);
-    };
+  if (pivots.value.length > 0) {
+    window.alert('max 1 pivot');
+    return;
+  }
+  if (item.parent) {
+    window.alert('no measures allowed');
+    return;
+  }
+  pivots.value.push(item);
+  removeFromOrigin(item, origin);
+};
 
-    const addToDimensions = () => {
-      const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
-           if (item.parent) {
-        window.alert('no values allowed')
-        return
-      }
-      dimensions.value.push(item);
-      removeFromOrigin(item, origin);
-    };
+const addToDimensions = () => {
+  const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
+  if (item.parent) {
+    window.alert('no measures allowed');
+    return;
+  }
+  dimensions.value.push(item);
+  removeFromOrigin(item, origin);
+};
 
-    const addToValues = () => {
-      const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
-      if (!(item.parent)) {
-        window.alert('no values allowed')
-        return
-      }
-      availableValues.value.push(item);
-      removeFromOrigin(item, origin);
-    };
+const addToFields = () => {
+  const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
+  if (item.parent) {
+    window.alert('no measures allowed');
+    return;
+  }
+  fields.value.push(item);
+  removeFromOrigin(item, origin);
+};
 
-    const addToValuesZone = () => {
-      const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
-       if (!(item.parent)) {
-        window.alert('no values allowed')
-        return
-      }
-      values.value.push(item);
-      removeFromOrigin(item, origin);
-    };
+const addToMeasures = () => {
+  const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
+  if (!item.parent) {
+    window.alert('no measures allowed');
+    return;
+  }
+  availableMeasures.value.push(item);
+  removeFromOrigin(item, origin);
+};
 
-    const removeFromOrigin = (item, origin) => {
-      switch (origin) {
-        case 'dimensions':
-          dimensions.value = dimensions.value.filter(i => i.value !== item.value);
-          break;
-        case 'columns':
-          columns.value = columns.value.filter(i => i.value !== item.value);
-          break;
-        case 'rows':
-          rows.value = rows.value.filter(i => i.value !== item.value);
-          break;
-        case 'values':
-          values.value = values.value.filter(i => i.value !== item.value);
-          break;
-        case 'availableValues':
-          availableValues.value = availableValues.value.filter(i => i.value !== item.value);
-          break;
-      }
-    };
+const addToMeasuresZone = () => {
+  const { item, origin } = JSON.parse(event.dataTransfer.getData('item'));
+  if (!item.parent) {
+    window.alert('no measures allowed');
+    return;
+  }
+  measures.value.push(item);
+  removeFromOrigin(item, origin);
+};
+
+const removeFromOrigin = (item, origin) => {
+  switch (origin) {
+    case 'fields':
+      fields.value = fields.value.filter((i) => i.value !== item.value);
+      break;
+    case 'pivots':
+      pivots.value = pivots.value.filter((i) => i.value !== item.value);
+      break;
+    case 'dimensions':
+      dimensions.value = dimensions.value.filter((i) => i.value !== item.value);
+      break;
+    case 'measures':
+      measures.value = measures.value.filter((i) => i.value !== item.value);
+      break;
+    case 'availableMeasures':
+      availableMeasures.value = availableMeasures.value.filter((i) => i.value !== item.value);
+      break;
+  }
+};
 const showIndex = ref(false);
 const templateFooter = ref(false);
-const items: Item[] = ref(mockItems)
+const items: Item[] = ref(mockItems);
 
 function alert(obj) {
   window.alert(JSON.stringify(obj));
@@ -300,8 +308,6 @@ function alert(obj) {
 
 
 <style lang="scss">
-
-
 
 thead>tr{background-color: #f2f2f2}
 
@@ -408,7 +414,6 @@ tbody>tr:nth-child(even){background-color: #f2f2f2}
 <style scoped>
 .drag-drop-container {
   display: flex;
-  
 }
 
 .group {
@@ -419,10 +424,10 @@ tbody>tr:nth-child(even){background-color: #f2f2f2}
 }
 
 .dimensions,
-.values,
-.columns,
-.rows,
-.values-zone {
+.measures,
+.pivots,
+.fields,
+.measures-zone {
   border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
@@ -442,8 +447,6 @@ button.value {
   color: white;
 
 }
-
-
 
 h2 {
   margin-top: 0;
