@@ -9,8 +9,8 @@
     :rows-per-page="-1"
     hide-footer
     show-index
-    :custom-table-data-function="customTableDataFunction"
-    :custom-table-row-function="customTableRowFunction"
+    :custom-table-data-class="customTableDataClass"
+    :custom-table-row-class="customTableRowClass"
     locale="sv-SE"
     @click-cell="alert"
   >
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-function customTableRowFunction({ index }: { index: number }) {
+function customTableRowClass({ index }: { index: number }) {
   if (index === 0) {
     return ['selectedRow'];
   } else if (index === 1) {
@@ -34,7 +34,7 @@ function customTableRowFunction({ index }: { index: number }) {
   return [];
 }
 
-function customTableDataFunction({ header, item }: { header: Value; item: Item }) {
+function customTableDataClass({ header, item }: { header: Value; item: Item }) {
   //&& item['sales_change'] >= 0
 
   let l: string[] = [];
