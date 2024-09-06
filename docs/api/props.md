@@ -70,7 +70,7 @@ import propsWithDefault from '../../src/propsWithDefault'
 
 
 const requiredProps = computed(() => {
-    const filteredObject: Record<string, unknown> = {};
+    const filteredObject: Record<string, any> = {};
     for (const [key, value] of Object.entries(propsWithDefault)) {
     if (typeof value === 'object' && value !== null && 'required' in value) {
         if (value['required'] === true) {
@@ -83,7 +83,7 @@ const requiredProps = computed(() => {
 
 
 const nonRequiredProps = computed(() => {
-    const filteredObject: Record<string, unknown> = {};
+    const filteredObject: Record<string, any> = {};
     for (const [key, value] of Object.entries(propsWithDefault)) {
         if (!(typeof value === 'object' && value !== null && 'required' in value)) {
         filteredObject[key] = value;       

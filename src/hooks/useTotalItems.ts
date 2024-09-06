@@ -13,7 +13,7 @@ export default function useTotalItems(
   dimensions: Ref<Dimension[]>,
   searchField: Ref<string | string[]>,
   searchValue: Ref<string>,
-  emits: (event: EmitsEventName, ...args: unknown[]) => void,
+  emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const generateSearchingTarget = (item: Item): string => {
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
@@ -79,7 +79,7 @@ export default function useTotalItems(
             return comparison(getItemValue(field, item), criteria as string);
           }
 
-          const itemValue: Item = getItemValue(field, item);
+          const itemValue: any = getItemValue(field, item);
 
           if (itemValue === null) return false; // added 2023-11-12 to not include null
 
