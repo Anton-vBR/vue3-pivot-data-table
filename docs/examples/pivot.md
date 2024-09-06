@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import PivotDataTable from '@/src/components/PivotDataTable.vue'
-import { Value, Item, Column } from '@/types/main.d.ts';
+import { Measure, Item, Pivot } from '@/types/main.d.ts';
 
-const column: Column = { text: 'Fruit', value: 'fruit' };
+const pivot: Pivot = { text: 'Fruit', value: 'fruit' };
 
-const values: Value[] = [{ text: 'Sales', value: 'sales', sortable: true}];
+const measures: Measure[] = [{ text: 'Sales', value: 'sales', sortable: true}];
 
 const items: Item[] = [
   { fruit: 'Tomato', sales: 30 },
@@ -20,7 +20,7 @@ const items: Item[] = [
 
 **Output**
 
-<PivotDataTable :items="items" :values="values" :column="column" />
+<PivotDataTable :items :measures :pivot />
 
 
 **Input**
@@ -29,19 +29,19 @@ const items: Item[] = [
 ```vue
 <template>
     <PivotDataTable 
-        :items="items" 
-        :values="values" 
-        :column="column" 
+        :items 
+        :measures 
+        :pivot 
     />
 </template>
 
 <script setup>
 
-import type { Column, Value, Item } from "vue3-pivot-data-table";
+import type { Pivot, Measure, Item } from "vue3-pivot-data-table";
 
-const column: Column = { text: 'Fruit', value: 'fruit' };
+const pivot: Pivot = { text: 'Fruit', value: 'fruit' };
 
-const values: Value[] = [{ text: 'Sales', value: 'sales', sortable: true}];
+const measures: Measure[] = [{ text: 'Sales', value: 'sales', sortable: true}];
 
 const items: Item[] = [
   { fruit: 'Tomato', sales: 30 },

@@ -43,7 +43,7 @@
     "vue-component"
   ],
   "dependencies": {
-    "vue": "^3.3.4"
+    "vue": "^3.5.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
@@ -62,7 +62,7 @@
     "vite": "^4.4.5",
     "vitepress": "^1.0.0-rc.42",
     "vitest": "^2.0.2",
-    "vue-tsc": "^1.8.5"
+    "vue-tsc": "^2.1.6"
   },
   "directories": {
     "doc": "docs",

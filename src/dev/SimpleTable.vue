@@ -1,9 +1,9 @@
 <template>
   <PivotDataTable
     inner-table-class-name="dataTable"
-    :rows="rows"
-    :values="values"
-    :items="items"
+    :dimensions
+    :measures
+    :items
     sort-by="weekday"
     sort-type="desc"
     :rows-per-page="10"
@@ -18,9 +18,9 @@
 <script lang="ts" setup>
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
-import { Value, Item, Row } from '../../types/main';
+import { Measure, Item, Dimension } from '../../types/main';
 
-const rows: Row[] = [
+const dimensions: Dimension[] = [
   {
     text: 'Weekday',
     value: 'weekday',
@@ -37,7 +37,7 @@ const rows: Row[] = [
   },
 ];
 
-const values: Value[] = [
+const measures: Measure[] = [
   {
     text: 'Sales',
     value: 'sales',
@@ -49,7 +49,7 @@ const values: Value[] = [
 
 const items: Item[] = mockItems;
 
-function alert(obj: Row) {
+function alert(obj: Dimension) {
   window.alert(JSON.stringify(obj));
 }
 </script>

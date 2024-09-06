@@ -2,10 +2,10 @@
   <PivotDataTable
     table-class-name="myWrapperClass"
     inner-table-class-name="myTableClass"
-    :rows="rows"
-    :values="values"
-    :items="items"
-    :column="column"
+    :dimensions
+    :measures
+    :items
+    :pivot
     :rows-per-page="-1"
     hide-footer
     show-index
@@ -14,7 +14,7 @@
     locale="sv-SE"
     @click-cell="alert"
   >
-    <template #[`header-column-Tomato`]="header">{{ header.text }} **</template>
+    <template #[`header-pivot-Tomato`]="header">{{ header.text }} **</template>
     <template #header-sales="header">{{ header.text }} *</template>
     <template #header-parent-Sales="header">{{ header.text }} (tooltip here?)</template>
     <!-- <template #item-sales="item"> {{ item.sales }} (ARROW HERE) </template> -->
@@ -34,7 +34,7 @@ function customTableRowClass({ index }: { index: number }) {
   return [];
 }
 
-function customTableDataClass({ header, item }: { header: Value; item: Item }) {
+function customTableDataClass({ header, item }: { header: HeaderForRender; item: Item }) {
   //&& item['sales_change'] >= 0
 
   let l: string[] = [];
@@ -52,9 +52,9 @@ function customTableDataClass({ header, item }: { header: Value; item: Item }) {
 
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
-import { Value, Item, Row, Column } from '../../types/main';
+import { Measure, Item, Dimension, Pivot, HeaderForRender } from '../../types/main';
 
-const rows: Row[] = [
+const dimensions: Dimension[] = [
   {
     text: 'Weeknum',
     value: 'weeknum',
@@ -70,13 +70,13 @@ const rows: Row[] = [
   },
 ];
 
-const column: Column = {
+const pivot: Pivot = {
   text: 'Fruit',
   value: 'fruit',
-  formatFunc: (x: any) => 'Hej!' + x,
+  formatFunc: (x: string) => 'Hej!' + x,
 };
 
-const values: Value[] = [
+const measures: Measure[] = [
   {
     text: 'Outcome',
     value: 'sales',
@@ -109,7 +109,7 @@ const values: Value[] = [
 
 const items: Item[] = mockItems.filter((x) => !(x.fruit === 'Tomato' && x.weekday === 'Tuesday'));
 
-function alert(obj: Row) {
+function alert(obj: Dimension) {
   window.alert(JSON.stringify(obj));
 }
 </script>

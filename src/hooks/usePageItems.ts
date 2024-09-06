@@ -1,12 +1,12 @@
 import { Ref, computed, ComputedRef } from 'vue';
-import { Column, GroupedRow, Item } from '../../types/main';
+import { Pivot, GroupedDimension, Item } from '../../types/main';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,
   rowsPerPageRef: Ref<number>,
   showIndex: Ref<boolean>,
-  totalItems: ComputedRef<Item[] | GroupedRow[]>,
-  column: Ref<Column>,
+  totalItems: ComputedRef<Item[] | GroupedDimension[]>,
+  pivot: Ref<Pivot>,
 ) {
   const currentPageFirstIndex = computed((): number => (currentPaginationNumber.value - 1) * rowsPerPageRef.value + 1);
 
@@ -15,7 +15,7 @@ export default function usePageItems(
   });
 
   // items in current page
-  const itemsInPage = computed((): Item[] | GroupedRow[] => {
+  const itemsInPage = computed((): Item[] | GroupedDimension[] => {
     if (rowsPerPageRef.value === -1) {
       return totalItems.value;
     }
@@ -23,11 +23,11 @@ export default function usePageItems(
     return totalItems.value.slice(currentPageFirstIndex.value - 1, currentPageLastIndex.value);
   });
 
-  const itemsWithIndex = computed((): Item[] | GroupedRow[] => {
+  const itemsWithIndex = computed((): Item[] | GroupedDimension[] => {
     if (showIndex.value) {
-      if (column.value) {
+      if (pivot.value) {
         return itemsInPage.value.map((item, index) => {
-          item['rows'] = { index: currentPageFirstIndex.value + index, ...item['rows'] };
+          item['dimensions'] = { index: currentPageFirstIndex.value + index, ...item['dimensions'] };
           return item;
         });
       }
@@ -38,7 +38,7 @@ export default function usePageItems(
   });
 
   // items for render
-  const pageItems = computed((): Item[] | GroupedRow[] => {
+  const pageItems = computed((): Item[] | GroupedDimension[] => {
     return itemsWithIndex.value;
   });
 

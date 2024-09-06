@@ -1,13 +1,5 @@
 <template>
-  <PivotDataTable
-    inner-table-class-name="dataTable"
-    :rows="rows"
-    :values="values"
-    :items="items"
-    :column="column"
-    :rows-per-page="10"
-    show-index
-  >
+  <PivotDataTable inner-table-class-name="dataTable" :dimensions :measures :items :pivot :rows-per-page="10" show-index>
     <template #item-sales="item"> ${{ item.sales }} </template>
   </PivotDataTable>
 </template>
@@ -15,9 +7,9 @@
 <script lang="ts" setup>
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
-import { Value, Item, Row, Column } from '../../types/main';
+import { Measure, Item, Dimension, Pivot } from '../../types/main';
 
-const rows: Row[] = [
+const dimensions: Dimension[] = [
   {
     text: 'Weekday',
     value: 'weekday',
@@ -29,12 +21,12 @@ const rows: Row[] = [
   },
 ];
 
-const column: Column = {
+const pivot: Pivot = {
   text: 'Fruit',
   value: 'fruit',
 };
 
-const values: Value[] = [
+const measures: Measure[] = [
   {
     text: 'Sales',
     value: 'sales',
