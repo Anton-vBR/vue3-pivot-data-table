@@ -158,6 +158,9 @@
         v-bind="{
           headersForRender,
           updateSortField,
+          generateCellContentBasedOnPivot,
+          generateCellContent,
+          locale,
         }"
       />
     </table>
