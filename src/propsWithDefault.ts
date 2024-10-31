@@ -179,4 +179,9 @@ export default {
     default: '-',
     description: 'Text to be shown if cellvalue is null',
   },
+  splitDimensionHeaders: {
+    type: Boolean,
+    default: false,
+    description: 'Forces spit of dimension headers into separate cells.',
+  },
 };

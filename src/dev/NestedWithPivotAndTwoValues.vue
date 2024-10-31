@@ -8,8 +8,9 @@
     :pivot
     :rows-per-page="-1"
     hide-footer
-    show-index
+    :show-index="false"
     show-index-class="sticky-col"
+    :split-dimension-headers="true"
     locale="en-US"
     @click-cell="alert"
   >
@@ -31,6 +32,7 @@ const dimensions: Dimension[] = [
   {
     text: 'Weeknum',
     value: 'weeknum',
+    cssClass: 'sticky-col',
   },
   {
     text: 'Weekday',
