@@ -14,6 +14,7 @@ export default function useHeaders(
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
+  splitDimensionHeaders: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const pivotDomain = computed<string[]>(() => {
@@ -121,12 +122,18 @@ export default function useHeaders(
           }
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.originalText === originalText) {
+          if (
+            lastEntry &&
+            (item.type === 'tableValue' ? true : !splitDimensionHeaders.value) &&
+            (lastEntry.parent?.text !== null || item.parent?.text !== null) &&
+            lastEntry.text === text &&
+            !lastEntry.isIndex &&
+            lastEntry.originalText === originalText
+          ) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {
             // Add a new entry for a new or first occurrence
-
             accumulator.push({
               type: 'pivot',
               isIndex: item.value === 'index',
@@ -134,6 +141,7 @@ export default function useHeaders(
               originalText,
               count: 1,
               cssClass: item.cssClass ?? '',
+              parent: item.parent,
             });
           }
 
@@ -146,6 +154,7 @@ export default function useHeaders(
           isIndex: boolean;
           cssClass: string;
           originalText: string | null;
+          parent: { text: string } | undefined;
         }[],
       );
 
@@ -159,7 +168,15 @@ export default function useHeaders(
           const pivotValue = item.pivotValue;
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.pivotValue === pivotValue) {
+
+          if (
+            lastEntry &&
+            (item.type === 'tableValue' ? true : !splitDimensionHeaders.value) &&
+            (lastEntry.text !== null || text !== null) &&
+            lastEntry.text === text &&
+            !lastEntry.isIndex &&
+            lastEntry.pivotValue === pivotValue
+          ) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {

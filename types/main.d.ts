@@ -43,6 +43,7 @@ export type Dimension = {
   sortFunc?: any;
   sticky?: boolean;
   cssClass?: string;
+  parent?: { text: string };
   formatFunc?: any;
 };
 
