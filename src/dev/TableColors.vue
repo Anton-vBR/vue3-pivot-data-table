@@ -8,7 +8,8 @@
     :pivot
     :rows-per-page="-1"
     hide-footer
-    show-index
+    :show-index="false"
+    show-index-class="sticky-col"
     :custom-table-data-class="customTableDataClass"
     :custom-table-row-class="customTableRowClass"
     locale="sv-SE"
@@ -58,6 +59,10 @@ const dimensions: Dimension[] = [
   {
     text: 'Weeknum',
     value: 'weeknum',
+    cssClass: 'sticky-col',
+    parent: {
+      text: 'Week',
+    },
   },
   {
     text: 'Weekday',
@@ -66,6 +71,9 @@ const dimensions: Dimension[] = [
     sortFunc: (weekday: string) => {
       const weekdaysOrder: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       return weekdaysOrder.indexOf(weekday);
+    },
+    parent: {
+      text: 'Week',
     },
   },
 ];

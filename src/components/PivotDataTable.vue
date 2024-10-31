@@ -87,69 +87,90 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, index) in pageItems"
-          :id="`row-${index}`"
-          :key="index"
-          :class="[
-            { [oddRowClass]: (index + 1) % 2 === 0 },
-            { [evenRowClass]: index % 2 === 0 },
-            ...(customTableRowClass?.({ index, item }) ?? []),
-          ]"
-          :role="'button'"
-          :tabindex="0"
-        >
-          <td
-            v-for="(header, i) in headersForRender"
-            :key="i"
-            :role="headersForRender[i].clickable || headersForRender[i].hoverable ? 'button' : ''"
-            tabindex="0"
+        <template v-for="(item, index) in pageItems" :key="index">
+          <tr
+            :id="`row-${index}`"
             :class="[
-              {
-                [oddRowCellClass]: (index + 1) % 2 === 0,
-                [evenRowCellClass]: index % 2 === 0,
-                shadow: i === 0,
-                [header.cssClass ?? '']: true,
-                [header.type ?? '']: true,
-              },
-              ...(customTableDataClass?.({
-                header,
-                item:
+              { [oddRowClass]: (index + 1) % 2 === 0 },
+              { [evenRowClass]: index % 2 === 0 },
+              ...(customTableRowClass?.({ index, item }) ?? []),
+            ]"
+            :role="'button'"
+            :tabindex="0"
+          >
+            <td
+              v-for="(header, i) in headersForRender"
+              :key="i"
+              :role="headersForRender[i].clickable || headersForRender[i].hoverable ? 'button' : ''"
+              tabindex="0"
+              :class="[
+                {
+                  [oddRowCellClass]: (index + 1) % 2 === 0,
+                  [evenRowCellClass]: index % 2 === 0,
+                  shadow: i === 0,
+                  [header.cssClass ?? '']: true,
+                  [header.type ?? '']: true,
+                  'can-expand': header.value === 'expand',
+                },
+                ...(customTableDataClass?.({
+                  header,
+                  item:
+                    pivot && header.pivotValue
+                      ? item.items.find((x: Item) => x[pivot.value] === header.pivotValue)
+                      : pivot
+                      ? item['dimensions']
+                      : item,
+                  index,
+                }) ?? []),
+              ]"
+              @click="clickCell(item, headersForRender[i], index, $event)"
+              @mouseover="emits('mouseover', item, headersForRender[i], $event)"
+              @mouseleave="emits('mouseleave', item, $event)"
+            >
+              <slot
+                v-if="slots[`item-${header.value}`]"
+                :name="`item-${header.value}`"
+                v-bind="
                   pivot && header.pivotValue
                     ? item.items.find((x: Item) => x[pivot.value] === header.pivotValue)
                     : pivot
                     ? item['dimensions']
-                    : item,
-                index,
-              }) ?? []),
-            ]"
-            @click="clickCell(item, headersForRender[i], index, $event)"
-            @mouseover="emits('mouseover', item, headersForRender[i], $event)"
-            @mouseleave="emits('mouseleave', item, $event)"
+                    : item
+                "
+              />
+
+              <slot v-else-if="slots['item']" name="item" v-bind="{ pivot, item }" />
+
+              <template v-else-if="header.value === 'expand'">
+                <i
+                  class="expand-icon"
+                  :class="{ expanding: expandingItemIndexList.includes(prevPageEndIndex + index) }"
+                />
+              </template>
+
+              <template v-else-if="pivot">
+                {{ generateCellContentBasedOnPivot(header, item, pivot, locale, nullFillText) }}
+              </template>
+
+              <template v-else>
+                {{ generateCellContent(header, item, locale, nullFillText) }}
+              </template>
+            </td>
+          </tr>
+
+          <tr
+            v-if="ifHasExpandSlot && expandingItemIndexList.includes(index + prevPageEndIndex)"
+            :class="[{ 'even-row': (index + 1) % 2 === 0 }]"
           >
-            <slot
-              v-if="slots[`item-${header.value}`]"
-              :name="`item-${header.value}`"
-              v-bind="
-                pivot && header.pivotValue
-                  ? item.items.find((x: Item) => x[pivot.value] === header.pivotValue)
-                  : pivot
-                  ? item['dimensions']
-                  : item
-              "
-            />
-
-            <slot v-else-if="slots['item']" name="item" v-bind="{ pivot, item }" />
-
-            <template v-else-if="pivot">
-              {{ generateCellContentBasedOnPivot(header, item, pivot, locale, nullFillText) }}
-            </template>
-
-            <template v-else>
-              {{ generateCellContent(header, item, locale, nullFillText) }}
-            </template>
-          </td>
-        </tr>
+            <!-- <td class="expand sticky-col">
+              <slot name="expand" v-bind="item" />
+            </td> -->
+            <td :colspan="headersForRender.length" class="expand sticky-col">
+              <!-- <LoadingLine v-if="item.expandLoading" class="expand-loading" /> -->
+              <slot name="expand" v-bind="item" />
+            </td>
+          </tr>
+        </template>
       </tbody>
 
       <slot
@@ -158,6 +179,9 @@
         v-bind="{
           headersForRender,
           updateSortField,
+          generateCellContentBasedOnPivot,
+          generateCellContent,
+          locale,
         }"
       />
     </table>
@@ -224,11 +248,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, useSlots, provide, watch, onMounted } from 'vue';
+import { ref, toRefs, useSlots, provide, watch, onMounted, computed } from 'vue';
 import type { HeaderForRender, Item } from '../../types/main';
 
 import propsWithDefault from '../propsWithDefault';
 
+import useExpandableRow from '../hooks/useExpandableRow';
 import useTotalItems from '../hooks/useTotalItems';
 import useHeaders from '../hooks/useHeaders';
 import useRows from '../hooks/useRows';
@@ -275,6 +300,9 @@ const {
 } = toRefs(props);
 
 const slots = useSlots();
+
+const ifHasExpandSlot = computed(() => !!slots.expand);
+
 const emits = defineEmits(tEmits);
 
 // Creates the headers
@@ -290,6 +318,7 @@ const { clientSortOptions, headersForRenderParents, headersForRender, updateSort
   sortBy,
   sortType,
   sortPivotValue,
+  ifHasExpandSlot,
   emits,
 );
 
@@ -320,7 +349,18 @@ const { currentPageFirstIndex, currentPageLastIndex, pageItems } = usePageItems(
   pivot,
 );
 
+const prevPageEndIndex = computed(() => {
+  if (currentPaginationNumber.value === 0) return 0;
+  return (currentPaginationNumber.value - 1) * rowsPerPageRef.value;
+});
+
+// Expandable row logic, also has: clearExpandingItemIndexList
+const { expandingItemIndexList, updateExpandingItemIndexList } = useExpandableRow(pageItems, prevPageEndIndex, emits);
+
 const clickCell = (item: Item, header: HeaderForRender, index: number, $event: MouseEvent) => {
+  if (header.value === 'expand') {
+    updateExpandingItemIndexList(index + prevPageEndIndex.value, item, $event);
+  }
   emits('clickCell', item, header, index, $event);
 };
 

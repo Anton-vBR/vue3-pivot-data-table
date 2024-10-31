@@ -43,6 +43,7 @@ export type Dimension = {
   sortFunc?: any;
   sticky?: boolean;
   cssClass?: string;
+  parent?: { text: string };
   formatFunc?: any;
 };
 
@@ -85,6 +86,7 @@ export type HeaderForRender = {
   sortFunc?: any;
   hoverable?: boolean;
   clickable?: boolean;
+  colType?: string;
   parent?: { text: string };
   pivotValue?: any;
   cssClass?: string;

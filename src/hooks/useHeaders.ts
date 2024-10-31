@@ -1,4 +1,4 @@
-import { ref, Ref, computed } from 'vue';
+import { ref, Ref, computed, ComputedRef } from 'vue';
 import { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
@@ -14,6 +14,8 @@ export default function useHeaders(
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
+  ifHasExpandSlot: ComputedRef<boolean>,
+  splitDimensionHeaders: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const pivotDomain = computed<string[]>(() => {
@@ -47,12 +49,19 @@ export default function useHeaders(
   let fixedHeaders: HeaderForRender[] = [];
   const headersForRender = computed((): HeaderForRender[] => {
     if (pivot.value) {
-      const headers: HeaderForRender[] = pivotDomain.value.flatMap((pivotValue: string) => {
+      const headers: HeaderForRender[] = pivotDomain.value.flatMap((pivotValue: string, index: number) => {
         const headerGroup: HeaderForRender[] = measures.value.map((obj) => ({
           ...obj,
           pivotValue,
+
+          // newColumn: pivotDomain.value[pivotInd - 1] === pivotDomain.value[pivotInd],
         }));
-        return headerGroup;
+        return [
+          { ...headerGroup[0], colType: `firstEntry ${index % 2 === 0 ? 'evenPivot' : 'oddPivot'}` },
+          ...headerGroup
+            .slice(1)
+            .map((x) => ({ ...x, colType: `nonFirstEntry ${index % 2 === 0 ? 'evenPivot' : 'oddPivot'}` })),
+        ];
       });
       fixedHeaders = [
         ...(dimensions.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
@@ -87,17 +96,29 @@ export default function useHeaders(
       return headerSorting;
     });
 
+    // expand icon
+    let headersWithExpand: HeaderForRender[] = [];
+    if (!ifHasExpandSlot.value) {
+      headersWithExpand = headersSorting;
+    } else {
+      const headerExpand: HeaderForRender = { text: '', value: 'expand' };
+      headersWithExpand = [headerExpand, ...headersSorting];
+    }
+
     // show index
     let headersWithIndex: HeaderForRender[] = [];
     if (!showIndex.value) {
-      headersWithIndex = headersSorting;
+      headersWithIndex = headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
     } else {
       const headerIndex: HeaderForRender = {
         text: showIndexSymbol.value,
         value: 'index',
         cssClass: showIndexClass.value,
       };
-      headersWithIndex = [headerIndex, ...headersSorting];
+      headersWithIndex = [
+        headerIndex,
+        ...headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
+      ];
     }
 
     return headersWithIndex;
@@ -121,7 +142,15 @@ export default function useHeaders(
           }
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.originalText === originalText) {
+
+          if (
+            lastEntry &&
+            (splitDimensionHeaders && item.type === 'tableValue' ? true : false) &&
+            (lastEntry.parent?.text !== null || item.parent?.text !== null) &&
+            lastEntry.text === text &&
+            !lastEntry.isIndex &&
+            lastEntry.originalText === originalText
+          ) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {
@@ -134,6 +163,7 @@ export default function useHeaders(
               originalText,
               count: 1,
               cssClass: item.cssClass ?? '',
+              parent: item.parent,
             });
           }
 
@@ -146,6 +176,7 @@ export default function useHeaders(
           isIndex: boolean;
           cssClass: string;
           originalText: string | null;
+          parent: { text: string } | undefined;
         }[],
       );
 
@@ -159,7 +190,15 @@ export default function useHeaders(
           const pivotValue = item.pivotValue;
 
           const lastEntry = accumulator[accumulator.length - 1];
-          if (lastEntry && lastEntry.text === text && !lastEntry.isIndex && lastEntry.pivotValue === pivotValue) {
+
+          if (
+            lastEntry &&
+            (splitDimensionHeaders && item.type === 'tableValue' ? true : false) &&
+            (lastEntry.text !== null || text !== null) &&
+            lastEntry.text === text &&
+            !lastEntry.isIndex &&
+            lastEntry.pivotValue === pivotValue
+          ) {
             // Increment count for subsequent occurrences
             lastEntry.count++;
           } else {

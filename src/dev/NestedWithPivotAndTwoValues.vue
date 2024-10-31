@@ -8,8 +8,9 @@
     :pivot
     :rows-per-page="-1"
     hide-footer
-    show-index
+    :show-index
     show-index-class="sticky-col"
+    :split-dimension-headers="false"
     locale="en-US"
     @click-cell="alert"
   >
@@ -19,14 +20,20 @@
     <!-- <template #item-sales="item"> {{ item.sales }} (ARROW HERE) </template> -->
     <template #sort-icon> (icon here)</template>
     <!-- <template #footer="{ currentPageFirstIndex }">Footer here {{ currentPageFirstIndex }}</template> -->
+    <template #expand="item: Item">
+      <div class="expand">
+        <p>Margin: {{ JSON.stringify(item) }}</p>
+      </div>
+    </template>
   </PivotDataTable>
 </template>
 
 <script lang="ts" setup>
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
-import { Measure, Item, Dimension, Pivot } from '../../types/main';
+import { Measure, Item, Dimension, Pivot, HeaderForRender } from '../../types/main';
 
+const showIndex = false;
 const dimensions: Dimension[] = [
   {
     text: 'Weeknum',
@@ -82,8 +89,9 @@ const measures: Measure[] = [
 
 const items: Item[] = mockItems.filter((x) => !(x.fruit === 'Tomato' && x.weekday === 'Tuesday'));
 
-function alert(obj: Dimension) {
-  window.alert(JSON.stringify(obj));
+function alert(item: Item, header: HeaderForRender) {
+  if (header.value === 'expand') return;
+  window.alert(JSON.stringify(item));
 }
 </script>
 
