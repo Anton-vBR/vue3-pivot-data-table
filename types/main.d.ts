@@ -92,6 +92,7 @@ export type HeaderForRender = {
   type?: string;
   formatFunc?: any;
   numberFormat?: any;
+  colType?: string;
   prefix?: string;
   suffix?: string;
 };

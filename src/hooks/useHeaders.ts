@@ -48,12 +48,19 @@ export default function useHeaders(
   let fixedHeaders: HeaderForRender[] = [];
   const headersForRender = computed((): HeaderForRender[] => {
     if (pivot.value) {
-      const headers: HeaderForRender[] = pivotDomain.value.flatMap((pivotValue: string) => {
+      const headers: HeaderForRender[] = pivotDomain.value.flatMap((pivotValue: string, index: number) => {
         const headerGroup: HeaderForRender[] = measures.value.map((obj) => ({
           ...obj,
           pivotValue,
+
+          // newColumn: pivotDomain.value[pivotInd - 1] === pivotDomain.value[pivotInd],
         }));
-        return headerGroup;
+        return [
+          { ...headerGroup[0], colType: `firstEntry ${index % 2 === 0 ? 'evenPivot' : 'oddPivot'}` },
+          ...headerGroup
+            .slice(1)
+            .map((x) => ({ ...x, colType: `nonFirstEntry ${index % 2 === 0 ? 'evenPivot' : 'oddPivot'}` })),
+        ];
       });
       fixedHeaders = [
         ...(dimensions.value.map((x) => ({ ...x, type: 'tableRow' })) as HeaderForRender[]),
@@ -91,14 +98,19 @@ export default function useHeaders(
     // show index
     let headersWithIndex: HeaderForRender[] = [];
     if (!showIndex.value) {
-      headersWithIndex = headersSorting;
+      // headersWithIndex = headersSorting;
+
+      headersWithIndex = headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
     } else {
       const headerIndex: HeaderForRender = {
         text: showIndexSymbol.value,
         value: 'index',
         cssClass: showIndexClass.value,
       };
-      headersWithIndex = [headerIndex, ...headersSorting];
+      headersWithIndex = [
+        headerIndex,
+        ...headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
+      ];
     }
 
     return headersWithIndex;
