@@ -228,6 +228,7 @@ export default function useHeaders(
     receivedSortType: SortType | 'none',
     assignNewSortType: boolean = false,
     sortPivotValue: string | undefined = undefined,
+    silent: boolean = false,
   ) => {
     let sortType: SortType | null = null;
 
@@ -251,11 +252,13 @@ export default function useHeaders(
       };
     }
 
-    emits('updateSort', {
-      sortPivotValue,
-      sortType,
-      sortBy,
-    });
+    if (!silent) {
+      emits('updateSort', {
+        sortPivotValue,
+        sortType,
+        sortBy,
+      });
+    }
   };
 
   return {
