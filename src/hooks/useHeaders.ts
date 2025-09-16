@@ -14,7 +14,10 @@ export default function useHeaders(
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
+<<<<<<< HEAD
   ifHasExpandSlot: ComputedRef<boolean>,
+=======
+>>>>>>> main
   splitDimensionHeaders: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
@@ -108,7 +111,13 @@ export default function useHeaders(
     // show index
     let headersWithIndex: HeaderForRender[] = [];
     if (!showIndex.value) {
+<<<<<<< HEAD
       headersWithIndex = headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
+=======
+      // headersWithIndex = headersSorting;
+
+      headersWithIndex = headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
+>>>>>>> main
     } else {
       const headerIndex: HeaderForRender = {
         text: showIndexSymbol.value,
@@ -117,7 +126,11 @@ export default function useHeaders(
       };
       headersWithIndex = [
         headerIndex,
+<<<<<<< HEAD
         ...headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
+=======
+        ...headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
+>>>>>>> main
       ];
     }
 
@@ -142,10 +155,16 @@ export default function useHeaders(
           }
 
           const lastEntry = accumulator[accumulator.length - 1];
+<<<<<<< HEAD
 
           if (
             lastEntry &&
             (splitDimensionHeaders && item.type === 'tableValue' ? true : false) &&
+=======
+          if (
+            lastEntry &&
+            (item.type === 'tableValue' ? true : !splitDimensionHeaders.value) &&
+>>>>>>> main
             (lastEntry.parent?.text !== null || item.parent?.text !== null) &&
             lastEntry.text === text &&
             !lastEntry.isIndex &&
@@ -155,7 +174,6 @@ export default function useHeaders(
             lastEntry.count++;
           } else {
             // Add a new entry for a new or first occurrence
-
             accumulator.push({
               type: 'pivot',
               isIndex: item.value === 'index',
@@ -193,7 +211,11 @@ export default function useHeaders(
 
           if (
             lastEntry &&
+<<<<<<< HEAD
             (splitDimensionHeaders && item.type === 'tableValue' ? true : false) &&
+=======
+            (item.type === 'tableValue' ? true : !splitDimensionHeaders.value) &&
+>>>>>>> main
             (lastEntry.text !== null || text !== null) &&
             lastEntry.text === text &&
             !lastEntry.isIndex &&
@@ -238,6 +260,7 @@ export default function useHeaders(
     receivedSortType: SortType | 'none',
     assignNewSortType: boolean = false,
     sortPivotValue: string | undefined = undefined,
+    silent: boolean = false,
   ) => {
     let sortType: SortType | null = null;
 
@@ -261,11 +284,13 @@ export default function useHeaders(
       };
     }
 
-    emits('updateSort', {
-      sortPivotValue,
-      sortType,
-      sortBy,
-    });
+    if (!silent) {
+      emits('updateSort', {
+        sortPivotValue,
+        sortType,
+        sortBy,
+      });
+    }
   };
 
   return {

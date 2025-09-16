@@ -297,6 +297,7 @@ const {
   hideFooter,
   customTableRowClass,
   customTableDataClass,
+  splitDimensionHeaders,
 } = toRefs(props);
 
 const slots = useSlots();
@@ -318,7 +319,11 @@ const { clientSortOptions, headersForRenderParents, headersForRender, updateSort
   sortBy,
   sortType,
   sortPivotValue,
+<<<<<<< HEAD
   ifHasExpandSlot,
+=======
+  splitDimensionHeaders,
+>>>>>>> main
   emits,
 );
 
