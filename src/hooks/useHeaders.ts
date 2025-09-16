@@ -1,4 +1,4 @@
-import { ref, Ref, computed } from 'vue';
+import { ref, Ref, computed, ComputedRef } from 'vue';
 import { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
@@ -15,6 +15,7 @@ export default function useHeaders(
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
   splitDimensionHeaders: Ref<boolean>,
+  ifHasExpandSlot: ComputedRef<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const pivotDomain = computed<string[]>(() => {
@@ -95,12 +96,19 @@ export default function useHeaders(
       return headerSorting;
     });
 
+    // expand icon
+    let headersWithExpand: HeaderForRender[] = [];
+    if (!ifHasExpandSlot.value) {
+      headersWithExpand = headersSorting;
+    } else {
+      const headerExpand: HeaderForRender = { text: '', value: 'expand' };
+      headersWithExpand = [headerExpand, ...headersSorting];
+    }
+
     // show index
     let headersWithIndex: HeaderForRender[] = [];
     if (!showIndex.value) {
-      // headersWithIndex = headersSorting;
-
-      headersWithIndex = headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
+      headersWithIndex = headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') }));
     } else {
       const headerIndex: HeaderForRender = {
         text: showIndexSymbol.value,
@@ -109,7 +117,7 @@ export default function useHeaders(
       };
       headersWithIndex = [
         headerIndex,
-        ...headersSorting.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
+        ...headersWithExpand.map((x) => ({ ...x, cssClass: [x.cssClass ?? '', x.colType].join(' ') })),
       ];
     }
 

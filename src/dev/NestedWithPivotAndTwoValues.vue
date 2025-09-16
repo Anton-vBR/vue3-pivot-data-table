@@ -1,5 +1,7 @@
 <template>
+  Expanded items: {{ myPivotDataTable?.expandingItemIndexList }}
   <PivotDataTable
+    ref="myPivotDataTable"
     table-class-name="myWrapperClass"
     inner-table-class-name="myTableClass"
     :dimensions
@@ -13,10 +15,21 @@
     :split-dimension-headers="true"
     locale="en-US"
     @click-cell="alert"
+    @expand-row="expandRowStuff"
   >
     <template #[`header-pivot-Tomato`]="header">{{ header.text }} **</template>
     <template #header-sales="header">{{ header.text }} *</template>
     <template #header-parent-Sales="header">{{ header.text }} (tooltip here?)</template>
+
+    <template #expand="{ index, item }: { index: number; item: Item }">
+      <!-- <div :key="item.expandLoading + ':' + index" v-if="item.expandLoading">Loading... {{ item.expandLoading }}</div> -->
+      <!-- <div v-else class="expand">
+        <p>Item data: {{ JSON.stringify(item) }}</p>
+      </div> -->
+
+      <div v-if="loadingItems.includes(index)" class="expand">Loading... {{ index }}</div>
+      <div v-else>Item data: {{ JSON.stringify(item) }}</div>
+    </template>
     <!-- <template #item-sales="item"> {{ item.sales }} (ARROW HERE) </template> -->
     <template #sort-icon> (icon here)</template>
     <!-- <template #footer="{ currentPageFirstIndex }">Footer here {{ currentPageFirstIndex }}</template> -->
@@ -27,6 +40,22 @@
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
 import { Measure, Item, Dimension, Pivot } from '../../types/main';
+import { Ref, ref, toRaw } from 'vue';
+
+const loadingItems = ref([] as number[]);
+
+async function expandRowStuff(index: number, item: Item) {
+  item.expandLoading = true;
+  loadingItems.value.push(index);
+  console.log('Expand row event - load data here', item);
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  console.log('Data loaded');
+  item.expandLoading = false;
+  item['expandLoading'] = false;
+  loadingItems.value = loadingItems.value.filter((x) => x !== index);
+  //  { ...item };
+  // items.value[index] = JSON.parse(JSON.stringify(item));
+}
 
 const dimensions: Dimension[] = [
   {
@@ -44,6 +73,10 @@ const dimensions: Dimension[] = [
     },
   },
 ];
+
+// const randomKey = ref(0);
+
+const myPivotDataTable = ref<InstanceType<typeof PivotDataTable> | null>(null);
 
 const pivot: Pivot = {
   text: 'Fruit',
@@ -82,7 +115,10 @@ const measures: Measure[] = [
   },
 ];
 
-const items: Item[] = mockItems.filter((x) => !(x.fruit === 'Tomato' && x.weekday === 'Tuesday'));
+const items: Ref<Item[]> = ref(
+  mockItems.filter((x) => !(x.fruit === 'Tomato' && x.weekday === 'Tuesday')),
+  // .map((x) => ({ ...x, expandLoading: false })),
+);
 
 function alert(obj: Dimension) {
   window.alert(JSON.stringify(obj));

@@ -8,6 +8,7 @@ export const emits = [
   { name: 'updateTotalItems', description: 'Triggered when total items are updated' },
   { name: 'mouseover', description: 'Triggered when mouse is over' },
   { name: 'mouseleave', description: 'Triggered when mouse leaves' },
+  { name: 'expandRow', description: 'Triggered when a row is expanded or collapsed' },
 ];
 
 export default emits.map((x) => x.name);
