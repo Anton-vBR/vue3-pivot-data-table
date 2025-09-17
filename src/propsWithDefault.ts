@@ -102,6 +102,11 @@ export default {
     default: '',
     description: 'Class used for the index column.',
   },
+  expandableRowClass: {
+    type: String,
+    default: '',
+    description: 'Class used for the expandle-row column.',
+  },
   oddRowClass: {
     type: String,
     default: 'odd-row',

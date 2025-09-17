@@ -143,7 +143,9 @@
               <template v-else-if="header.value === 'expand'">
                 <i
                   class="expand-icon"
-                  :class="{ expanding: expandingItemIndexList.includes(prevPageEndIndex + index) }"
+                  :class="{
+                    expanding: expandingItemIndexList.includes(prevPageEndIndex + index),
+                  }"
                 />
               </template>
 
@@ -289,6 +291,7 @@ const {
   sortPivotValue,
   showIndexSymbol,
   showIndexClass,
+  expandableRowClass,
   nullFillText,
   hideFooter,
   customTableRowClass,
@@ -310,6 +313,7 @@ const { clientSortOptions, headersForRenderParents, headersForRender, updateSort
   mustSort,
   showIndex,
   showIndexClass,
+  expandableRowClass,
   sortBy,
   sortType,
   sortPivotValue,

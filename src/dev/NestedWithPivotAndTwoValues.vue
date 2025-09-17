@@ -40,7 +40,7 @@
 import mockItems from '../../mock/fruits';
 import PivotDataTable from '../components/PivotDataTable.vue';
 import { Measure, Item, Dimension, Pivot } from '../../types/main';
-import { Ref, ref, toRaw } from 'vue';
+import { Ref, ref } from 'vue';
 
 const loadingItems = ref([] as number[]);
 

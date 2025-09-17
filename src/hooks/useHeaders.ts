@@ -11,6 +11,7 @@ export default function useHeaders(
   mustSort: Ref<boolean>,
   showIndex: Ref<boolean>,
   showIndexClass: Ref<string>,
+  expandableRowClass: Ref<string>,
   sortBy: Ref<string>,
   sortType: Ref<SortType>,
   sortPivotValue: Ref<string>,
@@ -101,7 +102,11 @@ export default function useHeaders(
     if (!ifHasExpandSlot.value) {
       headersWithExpand = headersSorting;
     } else {
-      const headerExpand: HeaderForRender = { text: '', value: 'expand' };
+      const headerExpand: HeaderForRender = {
+        text: '',
+        value: 'expand',
+        cssClass: expandableRowClass.value,
+      };
       headersWithExpand = [headerExpand, ...headersSorting];
     }
 
