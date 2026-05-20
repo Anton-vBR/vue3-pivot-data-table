@@ -11,9 +11,13 @@
     "dist",
     "types"
   ],
+  "sideEffects": [
+    "dist/style.css"
+  ],
   "homepage": "https://github.com/Anton-vBR/vue3-pivot-data-table",
   "main": "./dist/vue3-pivot-data-table.umd.js",
   "module": "./dist/vue3-pivot-data-table.es.js",
+  "style": "./dist/style.css",
   "exports": {
     ".": {
       "types": "./types/main.d.ts",
