@@ -42,7 +42,7 @@
     "vue3-component",
     "vue-component"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "vue": "^3.5.0"
   },
   "devDependencies": {
@@ -62,6 +62,7 @@
     "vite": "^4.4.5",
     "vitepress": "^1.0.0-rc.42",
     "vitest": "^2.0.2",
+    "vue": "^3.5.34",
     "vue-tsc": "^2.1.6"
   },
   "directories": {
