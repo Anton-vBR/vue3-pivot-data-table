@@ -1,5 +1,5 @@
 import { Ref, computed, ComputedRef } from 'vue';
-import { Pivot, GroupedDimension, Item } from '../../types/main';
+import type { Pivot, GroupedDimension, Item } from '../../types/main';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,

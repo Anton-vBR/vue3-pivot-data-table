@@ -2,7 +2,7 @@ import { Ref, computed, watch } from 'vue';
 import type { Item, Pivot, FilterOption, Dimension, GroupedDimension, HeaderForRender } from '../../types/main';
 // import type { ClientSortOptions, EmitsEventName } from "../types/internal";
 import { getItemValue } from '../utils';
-import { ClientSortOptions, EmitsEventName } from '../../types/internal';
+import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
 export default function useTotalItems(
   headersForRender: Ref<HeaderForRender[]>,

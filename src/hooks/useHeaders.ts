@@ -1,5 +1,5 @@
 import { ref, Ref, computed } from 'vue';
-import { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
+import type { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
 export default function useHeaders(

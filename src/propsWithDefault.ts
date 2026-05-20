@@ -1,4 +1,4 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import type { SortType, Dimension, Pivot, FilterOption, Item, Measure, HeaderForRender } from '../types/main';
 
 export default {
