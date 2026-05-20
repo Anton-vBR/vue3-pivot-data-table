@@ -220,10 +220,6 @@
     <button @click="nextPage">></button>
   </div>
 
-  <!-- 
-  <h3> Test purposes </h3> 
-  <div>headersForRender: <textarea style="width: 80%; height: 80px" type="text" :value="JSON.stringify(headersForRender, null, 2)" /></div> 
-  -->
 </template>
 
 <script lang="ts" setup>
