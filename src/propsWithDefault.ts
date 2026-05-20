@@ -145,7 +145,7 @@ export default {
     description: 'Sort type or types (ascending or descending).',
   },
   sortPivotValue: {
-    type: String as PropType<SortType>,
+    type: String,
     default: '',
     description: 'Sort pivotValue when pivot is active',
   },
