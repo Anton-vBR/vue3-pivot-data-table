@@ -15,16 +15,13 @@ export type ClientSortOptions = {
 
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected';
 
-// eslint-disable-next-line max-len
 export type EmitsEventName =
+  | 'scroll'
   | 'clickRow'
-  | 'selectRow'
-  | 'deselectRow'
-  | 'expandRow'
+  | 'clickCell'
   | 'updateSort'
-  | 'update:itemsSelected'
-  | 'update:serverOptions'
   | 'updateFilter'
   | 'updatePageItems'
   | 'updateTotalItems'
-  | 'selectAll';
+  | 'mouseover'
+  | 'mouseleave';

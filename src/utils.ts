@@ -1,4 +1,4 @@
-import { Item, Pivot, HeaderForRender } from '../types/main';
+import type { Item, Pivot, HeaderForRender } from '../types/main';
 
 export function getItemValue(pivot: string, item: Item) {
   if (pivot.includes('.')) {

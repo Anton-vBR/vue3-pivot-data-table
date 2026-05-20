@@ -1,5 +1,5 @@
 import { ref, Ref, computed } from 'vue';
-import { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
+import type { Item, Measure, Pivot, SortType, Dimension, HeaderForRender } from '../../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../../types/internal';
 
 export default function useHeaders(
@@ -7,7 +7,7 @@ export default function useHeaders(
   showIndexSymbol: Ref<string>,
   dimensions: Ref<Dimension[]>,
   measures: Ref<Measure[]>,
-  pivot: Ref<Pivot>,
+  pivot: Ref<Pivot | null>,
   mustSort: Ref<boolean>,
   showIndex: Ref<boolean>,
   showIndexClass: Ref<string>,
@@ -18,8 +18,9 @@ export default function useHeaders(
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const pivotDomain = computed<string[]>(() => {
-    if (pivot.value) {
-      return [...new Set(items.value.map((item) => item[pivot.value.value]))];
+    const p = pivot.value;
+    if (p) {
+      return [...new Set(items.value.map((item) => item[p.value]))];
     } else {
       return [];
     }
@@ -120,6 +121,7 @@ export default function useHeaders(
     const parentGroups = [];
 
     if (pivot.value) {
+      const p = pivot.value;
       const resultArray = headersForRender.value.reduce(
         (accumulator, item) => {
           const originalText: string | null = item.pivotValue;
@@ -127,8 +129,8 @@ export default function useHeaders(
 
           if (!item.pivotValue) {
             text = null;
-          } else if (pivot.value.formatFunc) {
-            text = pivot.value.formatFunc(item.pivotValue);
+          } else if (p.formatFunc) {
+            text = p.formatFunc(item.pivotValue);
           } else {
             text = item.pivotValue;
           }

@@ -1,3 +1,5 @@
+import type { DefineComponent } from 'vue';
+
 export type SortType = 'asc' | 'desc';
 
 export type Item = Record<string, any>;
@@ -49,7 +51,7 @@ export type Dimension = {
 
 export type GroupedDimension = {
   key: string;
-  dimensions: Dimension[];
+  dimensions: Item;
   items: Item[];
 };
 
@@ -96,3 +98,45 @@ export type HeaderForRender = {
   prefix?: string;
   suffix?: string;
 };
+
+export interface PivotDataTableProps {
+  items: Item[];
+  measures: Measure[];
+  dimensions?: Dimension[];
+  pivot?: Pivot | null;
+  locale?: string;
+  currentPage?: number;
+  noRowsCustom?: boolean;
+  emptyMessage?: string;
+  filterOptions?: FilterOption[] | null;
+  hideFooter?: boolean;
+  hideHeader?: boolean;
+  loading?: boolean;
+  rowsPerPage?: number;
+  searchField?: string | string[];
+  rowsItems?: number[];
+  rowsOfPageSeparatorMessage?: string;
+  searchValue?: string;
+  showIndex?: boolean;
+  showIndexSymbol?: string;
+  showIndexClass?: string;
+  oddRowClass?: string;
+  evenRowClass?: string;
+  oddRowCellClass?: string;
+  customTableRowClass?: (args: { index: number; item: Item }) => string[];
+  customTableDataClass?: (args: { index: number; item: Item; header: HeaderForRender }) => string[];
+  evenRowCellClass?: string;
+  sortBy?: string;
+  sortType?: SortType;
+  sortPivotValue?: string;
+  tableClassName?: string;
+  innerTableClassName?: string;
+  headerClassName?: string;
+  mustSort?: boolean;
+  tableNodeId?: string;
+  nullFillText?: string;
+  splitDimensionHeaders?: boolean;
+}
+
+declare const PivotDataTable: DefineComponent<PivotDataTableProps>;
+export default PivotDataTable;

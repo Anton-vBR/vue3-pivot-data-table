@@ -2,7 +2,7 @@
   "name": "vue3-pivot-data-table",
   "author": "anton-vbr",
   "private": false,
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "A non-aggregating Vue3 table component for presenting pivot-like data",
   "type": "module",
   "types": "./types/main.d.ts",
@@ -11,9 +11,13 @@
     "dist",
     "types"
   ],
+  "sideEffects": [
+    "dist/style.css"
+  ],
   "homepage": "https://github.com/Anton-vBR/vue3-pivot-data-table",
   "main": "./dist/vue3-pivot-data-table.umd.js",
   "module": "./dist/vue3-pivot-data-table.es.js",
+  "style": "./dist/style.css",
   "exports": {
     ".": {
       "types": "./types/main.d.ts",
@@ -42,13 +46,13 @@
     "vue3-component",
     "vue-component"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "vue": "^3.5.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitest/coverage-v8": "^2.0.2",
     "@vue/test-utils": "^2.4.4",
@@ -62,6 +66,7 @@
     "vite": "^4.4.5",
     "vitepress": "^1.0.0-rc.42",
     "vitest": "^2.0.2",
+    "vue": "^3.5.34",
     "vue-tsc": "^2.1.6"
   },
   "directories": {

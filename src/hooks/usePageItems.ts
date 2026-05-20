@@ -1,12 +1,12 @@
 import { Ref, computed, ComputedRef } from 'vue';
-import { Pivot, GroupedDimension, Item } from '../../types/main';
+import type { Pivot, GroupedDimension, Item } from '../../types/main';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,
   rowsPerPageRef: Ref<number>,
   showIndex: Ref<boolean>,
   totalItems: ComputedRef<Item[] | GroupedDimension[]>,
-  pivot: Ref<Pivot>,
+  pivot: Ref<Pivot | null>,
 ) {
   const currentPageFirstIndex = computed((): number => (currentPaginationNumber.value - 1) * rowsPerPageRef.value + 1);
 

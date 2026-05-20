@@ -1,4 +1,4 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import type { SortType, Dimension, Pivot, FilterOption, Item, Measure, HeaderForRender } from '../types/main';
 
 export default {
@@ -145,7 +145,7 @@ export default {
     description: 'Sort type or types (ascending or descending).',
   },
   sortPivotValue: {
-    type: String as PropType<SortType>,
+    type: String,
     default: '',
     description: 'Sort pivotValue when pivot is active',
   },
