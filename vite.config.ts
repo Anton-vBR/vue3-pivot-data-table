@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     lib: {
-      name: 'vue3-pivot-data-table',
+      name: 'Vue3PivotDataTable',
       entry: path.resolve(__dirname, 'src/index.ts'),
       fileName: (format) => `vue3-pivot-data-table.${format}.js`,
     },
