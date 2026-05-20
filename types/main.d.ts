@@ -51,7 +51,7 @@ export type Dimension = {
 
 export type GroupedDimension = {
   key: string;
-  dimensions: Dimension[];
+  dimensions: Item;
   items: Item[];
 };
 
