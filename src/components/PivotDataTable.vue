@@ -391,7 +391,9 @@ defineExpose(expose);
 
 // Function that checks if duplicate..
 function duplicatesExist(): boolean {
-  const dims = [...dimensions.value.map((x) => x.value), pivot.value.value];
+  const p = pivot.value;
+  if (!p) return false;
+  const dims = [...dimensions.value.map((x) => x.value), p.value];
   const duplicateSet = new Set();
   for (let i = 0; i < items.value.length; i++) {
     const shouldBeUnique = dims.map((x) => items.value[i][x]).join('|');

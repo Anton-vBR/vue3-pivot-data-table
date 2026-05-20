@@ -7,9 +7,9 @@ import { ClientSortOptions, EmitsEventName } from '../../types/internal';
 export default function useTotalItems(
   headersForRender: Ref<HeaderForRender[]>,
   clientSortOptions: Ref<ClientSortOptions | null>,
-  filterOptions: Ref<FilterOption[]>,
+  filterOptions: Ref<FilterOption[] | null>,
   items: Ref<Item[]>,
-  pivot: Ref<Pivot>,
+  pivot: Ref<Pivot | null>,
   dimensions: Ref<Dimension[]>,
   searchField: Ref<string | string[]>,
   searchValue: Ref<string>,
@@ -136,20 +136,21 @@ export default function useTotalItems(
 
     const { sortBy, sortDesc, sortPivotValue } = clientSortOptions.value;
     const sortFunc = headersForRender.value.find((x) => x.value === sortBy)?.sortFunc;
+    const p = pivot.value; // capture before sort closure to allow TypeScript narrowing
 
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     const sortedItems = itemsFilteringSorted.sort((a, b) => {
       let aValue;
       let bValue;
 
-      if (pivot.value) {
+      if (p) {
         if (sortPivotValue) {
           aValue = sortFunc
-            ? sortFunc(a.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy])
-            : a.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy];
+            ? sortFunc(a.items.find((x: Item) => x[p.value] === sortPivotValue)?.[sortBy])
+            : a.items.find((x: Item) => x[p.value] === sortPivotValue)?.[sortBy];
           bValue = sortFunc
-            ? sortFunc(b.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy])
-            : b.items.find((x: Item) => x[pivot.value.value] === sortPivotValue)?.[sortBy];
+            ? sortFunc(b.items.find((x: Item) => x[p.value] === sortPivotValue)?.[sortBy])
+            : b.items.find((x: Item) => x[p.value] === sortPivotValue)?.[sortBy];
         } else {
           aValue = sortFunc ? sortFunc(a.dimensions[sortBy]) : a.dimensions[sortBy];
           bValue = sortFunc ? sortFunc(b.dimensions[sortBy]) : b.dimensions[sortBy];
